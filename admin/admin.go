@@ -6,7 +6,6 @@ import (
 	. "github.com/dujigui/blog/services/comments"
 	. "github.com/dujigui/blog/services/logs"
 	. "github.com/dujigui/blog/services/posts"
-	. "github.com/dujigui/blog/services/tags"
 	. "github.com/dujigui/blog/utils"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
@@ -31,13 +30,13 @@ func pages(app *iris.Application) {
 	tplEngine := iris.HTML("admin/html", ".html")
 	tplEngine.Reload(!Config().GetBool("production"))
 	tplEngine.AddFunc("getConfig", Pref)
-	tplEngine.AddFunc("submodule", submodule)
-	tplEngine.AddFunc("exist", exists)
-	tplEngine.AddFunc("string", str)
-	tplEngine.AddFunc("truncate", truncate)
-	tplEngine.AddFunc("truncateContent", content)
-	tplEngine.AddFunc("date", date)
-	tplEngine.AddFunc("tagSelected", tagSelected)
+	//tplEngine.AddFunc("submodule", submodule)
+	//tplEngine.AddFunc("exist", exists)
+	//tplEngine.AddFunc("string", str)
+	//tplEngine.AddFunc("truncate", truncate)
+	//tplEngine.AddFunc("truncateContent", content)
+	//tplEngine.AddFunc("date", date)
+	//tplEngine.AddFunc("tagSelected", tagSelected)
 	app.RegisterView(tplEngine)
 	app.HandleDir("/backyard", "admin/html/backyard")
 	app.HandleDir("/layui", "admin/html/layui")
@@ -50,6 +49,7 @@ func pages(app *iris.Application) {
 	pp.Get("/list", listPost)
 	pp.Delete("/{id:int}", delPost)
 	pp.Get("/{id:int}", getPost)
+	pp.Post("/markdown", markdown)
 
 	fp := pa.Party("/files")
 	mvc.New(fp).Handle(new(filesCtrl))
@@ -76,42 +76,42 @@ func pages(app *iris.Application) {
 	ppp.Patch("/", patchPref)
 }
 
-func submodule(expect1, cond1, expect2, cond2 string) bool {
-	return expect1 == cond1 && expect2 == cond2
-}
-
-func exists(o interface{}) bool {
-	return o != nil
-}
-
-func str(content []byte) string {
-	return string(content)
-}
-
-func content(length int, content []byte) string {
-	return truncate(length, string(content))
-}
-
-func truncate(length int, s string) string {
-	sRune := []rune(s)
-	if len(sRune) > length {
-		return string(sRune[:length]) + "..."
-	}
-	return s
-}
-
-func date(t time.Time) string {
-	return t.Format("2006-01-02 15:04:05")
-}
-
-func tagSelected(tags []Tag, tag Tag) bool {
-	for _, v := range tags {
-		if v.ID == tag.ID {
-			return true
-		}
-	}
-	return false
-}
+//func submodule(expect1, cond1, expect2, cond2 string) bool {
+//	return expect1 == cond1 && expect2 == cond2
+//}
+//
+//func exists(o interface{}) bool {
+//	return o != nil
+//}
+//
+//func str(content []byte) string {
+//	return string(content)
+//}
+//
+//func content(length int, content []byte) string {
+//	return truncate(length, string(content))
+//}
+//
+//func truncate(length int, s string) string {
+//	sRune := []rune(s)
+//	if len(sRune) > length {
+//		return string(sRune[:length]) + "..."
+//	}
+//	return s
+//}
+//
+//func date(t time.Time) string {
+//	return t.Format("2006-01-02 15:04:05")
+//}
+//
+//func tagSelected(tags []Tag, tag Tag) bool {
+//	for _, v := range tags {
+//		if v.ID == tag.ID {
+//			return true
+//		}
+//	}
+//	return false
+//}
 
 type adminCtrl struct {
 	Ctx iris.Context
@@ -138,8 +138,6 @@ func (c *adminCtrl) Get() mvc.View {
 	return mvc.View{
 		Name: "tpl/dashboard.html",
 		Data: iris.Map{
-			"SectionName":    "dashboard",
-			"SubSectionName": "dashboard",
 			"tab":            dashboard,
 			"PostNumber":     pc,
 			"CommentNumber":  cc,

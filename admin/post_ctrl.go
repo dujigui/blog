@@ -6,6 +6,7 @@ import (
 	. "github.com/dujigui/blog/services/posts"
 	. "github.com/dujigui/blog/services/tags"
 	. "github.com/dujigui/blog/utils"
+	"github.com/iris-contrib/blackfriday"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 	"strings"
@@ -215,4 +216,10 @@ func getPost(ctx iris.Context) {
 	pf := formPost{Post:p, Content:string(p.Content)}
 
 	ctx.JSON(Result(true, "ok", pf))
+}
+
+
+func markdown(ctx iris.Context) {
+	d, _ := ctx.GetBody()
+	ctx.Write(blackfriday.Run(d))
 }

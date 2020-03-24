@@ -29,28 +29,49 @@ function changeType(t) {
     }
 }
 
-$.ajax({
-    url: '/backyard/js/showdown.min.js',
-    dataType: 'script',
-    success: function () {
-        converter = new showdown.Converter();
-        convertMD();
-    },
-    async: true
-});
-
-var converter;
 var ce = $('#ContentEditor');
 var cp = $('#ContentPreview');
 ce.on("input", function () {
     convertMD();
 });
 
-function convertMD() {
+
+function convertmd() {
     // https://prismjs.com/extending.html#highlight-all
-    cp.html(converter.makeHtml(ce.val()));
-    Prism.highlightAll(true);
+    // cp.html(converter.makeHtml(ce.val()));
+    // Prism.highlightAll(true);
+
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: "/admin/posts/markdown",
+        context: document.body,
+        data: ce.val(),
+        success: function (result) {
+            cp.html(result);
+            Prism.highlightAll(true);
+        },
+        error: function (result) {
+            console.log(result);
+            toast('解析markdown失败');
+        }
+    });
 }
+
+var convertMD = function debounce(fn, delay = 2000) {
+    let timer;
+
+    return function () {
+        var context = this;
+        var args = arguments;
+
+        clearTimeout(timer);
+
+        timer = setTimeout(function () {
+            fn.apply(context, args);
+        }, delay);
+    }
+}(convertmd, 1000);
 
 var tags;
 var post;
@@ -71,14 +92,13 @@ $.ajax({
 });
 
 
-
 var arr = window.location.href.split('/');
 id = arr[arr.length - 1];
 if (isNaN(id)) {
     $('#postForm').attr('action', '/admin/posts');
     post = {'create_flag': true};
     renderIfBoth();
-}else {
+} else {
     $('#postForm').attr('action', '/admin/posts/' + id);
 
     $.ajax({

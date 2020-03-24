@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-
 	app := iris.New()
 	app.Logger().SetLevel("debug")
 	app.Use(recover.New())
