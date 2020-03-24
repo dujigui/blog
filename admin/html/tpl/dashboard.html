@@ -1,0 +1,29 @@
+<div class="layui-row" style="margin-top: 10px">
+    <div class="layui-col-md3 layui-col-sm6 layui-col-xs12 layui-bg-red center ">
+        <span>发表 </span><span class="num">{{.PostNumber}}</span><span> 篇文章</span>
+    </div>
+
+    <div class="layui-col-md3 layui-col-sm6 layui-col-xs12 layui-bg-green center">
+        <span>收到 </span><span class="num">{{.CommentNumber}}</span><span> 条评论</span>
+    </div>
+
+    <div class="layui-col-md3 layui-col-sm6 layui-col-xs12 layui-bg-cyan center">
+        <span>离上次发表 </span><span class="num">{{.DaysLastPost}}</span><span> 天</span>
+    </div>
+
+    <div class="layui-col-md3 layui-col-sm6 layui-col-xs12 layui-bg-orange center">
+        <span>正常运行 </span><span class="num">{{.DayOnline}}</span><span> 天</span>
+    </div>
+</div>
+
+<div class="layui-row">
+    <div class="layui-card">
+        <div id="year-pc-h" class="layui-card-header"></div>
+        <div class="layui-card-body">
+            <div class="layui-progress layui-progress-big" lay-showPercent="true" lay-filter="year-pc">
+                <div class="layui-progress-bar layui-bg-red" lay-percent="0%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

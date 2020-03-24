@@ -37,6 +37,7 @@ type Users interface {
 	Retrieve(id int) (User, error)
 	Update(id int, params Params) error
 	Delete(id int) error
+	First()(User, error)
 }
 
 type User struct {
@@ -68,4 +69,11 @@ func (u *mysql) Update(id int, params Params) error {
 
 func (u *mysql) Delete(id int) error {
 	return Delete(tableName, id)
+}
+
+func (u *mysql) First() (user User, err error) {
+	err = Condition(tableName, "order by created asc", func(rows *sql.Rows) error {
+		return rows.Scan(&user.ID, &user.Username, &user.Password, &user.Created, &user.Updated)
+	})
+	return
 }

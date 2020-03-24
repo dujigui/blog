@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <link rel="stylesheet" href="/backyard/css/admin.css">
+    <link rel="stylesheet" href="/backyard/css/prism.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">{{getConfig.AdminPageName}}</div>
+
+        <!-- 功能菜单 -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item" id="dashboard">
+                <a href="/admin"><i class="layui-icon layui-icon-console"> </i>概览</a>
+            </li>
+            <li class="layui-nav-item" id="post">
+                <a href="/admin/posts"><i class="layui-icon layui-icon-release"> </i>文章</a>
+                <dl class="layui-nav-child">
+                    <dd id="post_list"><a href="/admin/posts">列表</a></dd>
+                    <dd id="post_editor"><a href="/admin/posts/editor">编辑器</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" id="file">
+                <a href="/admin/files"><i class="layui-icon layui-icon-upload-drag"> </i>文件</a>
+            </li>
+            <li class="layui-nav-item" id="tag">
+                <a href="/admin/tags"><i class="layui-icon layui-icon-note"> </i>标签</a>
+            </li>
+            <li class="layui-nav-item" id="comment">
+                <a href="/admin/comments"><i class="layui-icon layui-icon-chat"> </i>评论</a>
+            </li>
+            <li class="layui-nav-item" id="preference">
+                <a href="/admin/preferences"><i class="layui-icon layui-icon-set"> </i>设置</a>
+            </li>
+        </ul>
+
+        <!-- 用户菜单 -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    贤心
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                    <dd><a href="">退出</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-body" style="left: 0; bottom: 0;">
+        {{ yield }}
+    </div>
+</div>
+</body>
+<script>
+    var $;
+    var toast;
+    var tab = {{.tab}};
+    var apn = {{getConfig.AdminPageName}};
+</script>
+<script src="/layui/layui.js"></script>
+<script src="/backyard/js/admin.js"></script>
+<script src="/backyard/js/prism.js"></script>
+</html>

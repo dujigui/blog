@@ -16,8 +16,8 @@ const (
     id       int primary key auto_increment not null,
     original varchar(255)                   null,
     hashed   varchar(255)                   null,
-    created  datetime                       not null,
-    updated  datetime                       not null
+    created datetime not null default current_timestamp,
+    updated datetime not null default current_timestamp on update current_timestamp
 );`
 	tableName = "files"
 )
@@ -37,13 +37,13 @@ type Files interface {
 	Retrieve(id int) (File, error)
 	Update(id int, params Params) error
 	Delete(id int) error
-	Page(page int) ([]File, int, error)
+	Page(page, limit int) ([]File, int, error)
 }
 
 type File struct {
 	ID       int
 	Original string
-	Hash     string
+	Hashed   string
 	Created  time.Time
 	Updated  time.Time
 }
@@ -58,7 +58,7 @@ func (m *mysql) Create(params Params) (int, error) {
 func (m *mysql) Retrieve(id int) (File, error) {
 	var f File
 	err := Retrieve(tableName, id, func(rows *sql.Rows) error {
-		return rows.Scan(&f.ID, &f.Original, &f.Hash, &f.Created, &f.Updated)
+		return rows.Scan(&f.ID, &f.Original, &f.Hashed, &f.Created, &f.Updated)
 	})
 	return f, err
 }
@@ -71,15 +71,25 @@ func (m *mysql) Delete(id int) error {
 	return Delete(tableName, id)
 }
 
-func (m *mysql) Page(page int) ([]File, int, error) {
+func (m *mysql) Page(page, limit int) ([]File, int, error) {
+	if page <= 0 {
+		page = 1
+	}
+	if limit <= 0 {
+		limit = 10
+	}
+	if limit >= 50 {
+		limit = 50
+	}
+
 	var files = make([]File, 0)
 	var f File
-	t, err := Page(tableName, "", func(rows *sql.Rows) error {
-		err := rows.Scan(&f.ID, &f.Original, &f.Hash, &f.Created, &f.Updated)
+	t, err := Page(tableName, "order by created desc", func(rows *sql.Rows) error {
+		err := rows.Scan(&f.ID, &f.Original, &f.Hashed, &f.Created, &f.Updated)
 		if err == nil {
 			files = append(files, f)
 		}
 		return err
-	}, 10, (page-1)*10)
+	}, limit, (page-1)*limit)
 	return files, t, err
 }

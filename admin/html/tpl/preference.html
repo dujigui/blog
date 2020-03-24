@@ -1,0 +1,37 @@
+<div class="content-box">
+    <form id="prefForm" class="layui-form layui-form-pane" action="/admin/preferences" method="post" lay-filter="prefForm">
+
+        <!-- 博客名称 -->
+        <div class="layui-form-item" id="blog_name">
+            <label class="layui-form-label">博客名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="blog_name" placeholder="请输入博客名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <!-- /.博客名称 -->
+
+        <!-- 后台名称 -->
+        <div class="layui-form-item" id="admin_page_name">
+            <label class="layui-form-label">后台名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="admin_page_name" placeholder="请输入后台名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <!-- /.后台名称 -->
+
+        <!-- "关于"文章 ID -->
+        <div class="layui-form-item" id="about_id">
+            <label class="layui-form-label">"关于"文章 ID</label>
+            <div class="layui-input-block">
+                <input type="text" name="about_id" placeholder='请输入"关于"文章 ID' autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <!-- /."关于"文章 ID -->
+
+        <!-- 提交按钮 -->
+        <div class="layui-form-item">
+            <button class="layui-btn" lay-submit>保存</button>
+        </div>
+        <!-- /.提交按钮 -->
+    </form>
+</div>

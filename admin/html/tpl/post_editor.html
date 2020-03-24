@@ -1,0 +1,89 @@
+<div class="layui-row">
+
+    <div class="layui-col-md6 layui-col-sm12">
+        <div class="content-box">
+            <form id="postForm" class="layui-form layui-form-pane" action="/admin/posts" method="post" lay-filter="postForm">
+
+                <!-- 文章类型 -->
+                <div class="layui-form-item" pane>
+                    <label class="layui-form-label">文章类型</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="Type" value=1 title="article" lay-filter="type" checked>
+                        <input type="radio" name="Type" value=2 title="snippet" lay-filter="type">
+                        <input type="radio" name="Type" value=3 title="moment" lay-filter="type">
+                    </div>
+                </div>
+                <!-- /.类型 -->
+
+
+                <!-- 标题 -->
+                <div class="layui-form-item" id="post-title">
+                    <label class="layui-form-label">标题</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="Title" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <!-- /.标题 -->
+
+                <!-- 描述 -->
+                <div class="layui-form-item" id="post-desc">
+                    <label class="layui-form-label">描述</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="Description" placeholder="请输入描述" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+                <!-- /.描述 -->
+
+                <!-- 封面 -->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">封面</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="Cover" placeholder="请输入封面" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <!-- /.封面 -->
+
+                <!-- 正文 -->
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">正文</label>
+                    <div class="layui-input-block">
+                        <textarea id="ContentEditor" name="Content" rows="15" placeholder="请输入正文" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+                <!-- /.正文 -->
+
+                <!-- 状态 -->
+                <div class="layui-form-item" pane>
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="IsPublished" value="0" title="存草稿">
+                        <input type="radio" name="IsPublished" value="1" title="发表" checked>
+                    </div>
+                </div>
+                <!-- /.状态 -->
+
+                <!-- 标签 -->
+                <div class="layui-form-item" pane>
+                    <label class="layui-form-label">标签</label>
+                    <div class="layui-input-block" id="tags">
+                    </div>
+                </div>
+                <!-- /.标签 -->
+
+                <!-- 提交按钮 -->
+                <div class="layui-form-item">
+                    <button class="layui-btn" lay-submit>提交</button>
+                </div>
+                <!-- /.提交按钮 -->
+            </form>
+        </div>
+    </div>
+
+
+    <div class="layui-col-md6 layui-col-sm12">
+        <div id="ContentPreview" class="content-box">
+        </div>
+    </div>
+
+</div>

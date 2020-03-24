@@ -1,0 +1,69 @@
+/* start layout */
+body {
+    background-color: #F0F0F0;
+}
+
+.content-box {
+    border: 1px solid #eee;
+    padding: 20px;
+    margin: 15px;
+    background: white;
+    border-radius: 5px;
+}
+
+.hide {
+    display: none;
+}
+
+/* end layout */
+
+/* start dashboard */
+.center {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.num {
+    font-size: 100px;
+}
+
+.layui-card {
+    margin: 20px;
+    background-color: white;
+}
+/* end dashboard */
+
+/* start post_list */
+.table-list-box {
+    margin: 15px;
+    background-color: white;
+}
+
+.layui-table, .layui-table-view {
+    margin: 0 0;
+}
+/* end post_list */
+
+/* start file_editor */
+.upload-btn {
+    width: 100%;
+    height: 100px;
+}
+
+.list-img {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.layui-table-cell {
+    height: auto;
+}
+/* end file_editor */
+
+
+/* start file_editor */
+.tag-btn {
+    width: 100%;
+    height: 50px;
+}
+/* end file_editor */

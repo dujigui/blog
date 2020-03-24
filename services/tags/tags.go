@@ -13,10 +13,10 @@ import (
 const (
 	tableStmt = `create table if not exists %s
 (
-    id      int primary key auto_increment not null,
-    name    varchar(255)                   not null,
-    created datetime                       not null,
-    updated datetime                       not null
+    id int primary key auto_increment not null,
+    name varchar(255) not null ,
+    created datetime not null default current_timestamp,
+    updated datetime not null default current_timestamp on update current_timestamp
 );`
 	tableName = "tags"
 )
@@ -36,7 +36,8 @@ type Tags interface {
 	Retrieve(id int) (Tag, error)
 	Update(id int, params Params) error
 	Delete(id int) error
-	RetrieveAll(ids string) ([]Tag, error)
+	RetrieveIDs(ids string) ([]Tag, error)
+	All() ([]Tag, error)
 }
 
 type Tag struct {
@@ -70,9 +71,19 @@ func (u *mysql) Delete(id int) error {
 }
 
 // id=5,10,11
-func (u *mysql) RetrieveAll(ids string) (tags []Tag, err error) {
+func (u *mysql) RetrieveIDs(ids string) (tags []Tag, err error) {
 	var t Tag
-	err = Condition(tableName, fmt.Sprintf("id in (%s)", ids), func(rows *sql.Rows) error {
+	err = Condition(tableName, fmt.Sprintf("where id in (%s)", ids), func(rows *sql.Rows) error {
+		err := rows.Scan(&t.ID, &t.Name, &t.Created, &t.Updated)
+		tags = append(tags, t)
+		return err
+	})
+	return
+}
+
+func (u *mysql) All() (tags []Tag, err error) {
+	var t Tag
+	err = Condition(tableName, "", func(rows *sql.Rows) error {
 		err := rows.Scan(&t.ID, &t.Name, &t.Created, &t.Updated)
 		tags = append(tags, t)
 		return err

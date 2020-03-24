@@ -16,9 +16,9 @@ const (
     id      int primary key auto_increment not null,
     post_id int                            not null,
     content varchar(255)                   not null,
-    created datetime                       not null,
-    updated datetime                       not null
-);`
+    created datetime not null default current_timestamp,
+    updated datetime not null default current_timestamp on update current_timestamp
+)`
 	tableName = "comments"
 )
 
@@ -37,8 +37,11 @@ type Comments interface {
 	Retrieve(id int) (Comment, error)
 	Update(id int, params Params) error
 	Delete(id int) error
+	Count() (int, error)
+	Page(page, limit int) ([]Comment, int, error)
 }
 
+// todo 添加评论审核功能
 type Comment struct {
 	ID      int
 	PostID  int
@@ -68,4 +71,31 @@ func (m *mysql) Update(id int, params Params) error {
 
 func (m *mysql) Delete(id int) error {
 	return Delete(tableName, id)
+}
+
+func (m *mysql) Count() (int, error) {
+	return Count(tableName, "")
+}
+
+func (m *mysql) Page(page, limit int) ([]Comment, int, error) {
+	if page <= 0 {
+		page = 1
+	}
+	if limit <= 0 {
+		limit = 10
+	}
+	if limit >= 50 {
+		limit = 50
+	}
+
+	var files = make([]Comment, 0)
+	var f Comment
+	t, err := Page(tableName, "order by created desc", func(rows *sql.Rows) error {
+		err := rows.Scan(&f.ID, &f.PostID, &f.Content, &f.Created, &f.Updated)
+		if err == nil {
+			files = append(files, f)
+		}
+		return err
+	}, limit, (page-1)*limit)
+	return files, t, err
 }

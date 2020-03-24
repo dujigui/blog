@@ -6,5 +6,7 @@
   "files": "data/files/",
   "host": "",
   "port": 8080,
-  "dsn": "blog:Aa123456@/blog?charset=utf8mb4&parseTime=True&loc=Local"
+  "dsn": "blog:Aa123456@/blog?charset=utf8mb4&parseTime=True&loc=Local",
+  "pref": "data/pref/",
+  "favicon": "visitor/html/favicon"
 }

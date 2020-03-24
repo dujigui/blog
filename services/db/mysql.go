@@ -123,12 +123,7 @@ func Delete(table string, id int) error {
 }
 
 func Condition(table, condition string, s Scanner, values ...interface{}) error {
-	if condition == "" {
-		condition = "true"
-	}
-	q := fmt.Sprintf("select * from %s where %s", table, condition)
-	fmt.Println(q)
-	rows, err := DB().Query(q, values...)
+	rows, err := DB().Query(fmt.Sprintf("select * from %s %s", table, condition), values...)
 	if err != nil {
 		Logger().Error("mysql", "准备获取数据列表失败", Params{"table": table, "values": values, "err": err})
 		return err
@@ -148,29 +143,14 @@ func Condition(table, condition string, s Scanner, values ...interface{}) error 
 }
 
 func Page(table, condition string, s Scanner, limit, offset int, values ...interface{}) (int, error) {
-	if condition == "" {
-		condition = "true"
-	}
-
-	var total int
-	rows, err := DB().Query(fmt.Sprintf("select count(*) from %s where %s", table, condition), values...)
+	total, err := Count(table, condition, values...)
 	if err != nil {
-		Logger().Error("mysql", "获取数据总数失败", Params{"table": table, "condition": condition, "values": values, "limit": limit, "offset": offset, "err": err})
-		return 0, err
+		return total, err
 	}
-	if rows.Next() {
-		err := rows.Scan(&total)
-		if err != nil {
-			Logger().Error("mysql", "扫描数据总数失败", Params{"table": table, "condition": condition, "values": values, "limit": limit, "offset": offset, "err": err})
-			rows.Close()
-			return 0, err
-		}
-	}
-	rows.Close()
 
 	values = append(values, limit)
 	values = append(values, offset)
-	rows, err = DB().Query(fmt.Sprintf("select * from %s where %s limit ? offset ?", table, condition), values...)
+	rows, err := DB().Query(fmt.Sprintf("select * from %s %s limit ? offset ?", table, condition), values...)
 	if err != nil {
 		Logger().Error("mysql", "准备获取分页列表失败", Params{"table": table, "values": values, "err": err})
 		return total, err
@@ -185,5 +165,24 @@ func Page(table, condition string, s Scanner, limit, offset int, values ...inter
 	}
 	rows.Close()
 	Logger().Trace("mysql", "获取分页列表成功", Params{"table": table, "values": values})
+	return total, nil
+}
+
+func Count(table, condition string, values ...interface{}) (int, error) {
+	var total int
+	rows, err := DB().Query(fmt.Sprintf("select count(*) from %s %s", table, condition), values...)
+	if err != nil {
+		Logger().Error("mysql", "获取数据总数失败", Params{"table": table, "condition": condition, "values": values,  "err": err})
+		return 0, err
+	}
+	if rows.Next() {
+		err := rows.Scan(&total)
+		if err != nil {
+			Logger().Error("mysql", "扫描数据总数失败", Params{"table": table, "condition": condition, "values": values,  "err": err})
+			rows.Close()
+			return 0, err
+		}
+	}
+	rows.Close()
 	return total, nil
 }
