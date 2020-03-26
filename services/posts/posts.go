@@ -51,6 +51,7 @@ type Posts interface {
 	Latest() (Post, error)
 }
 
+//todo 引进author的概念
 type Post struct {
 	ID          int
 	Title       string

@@ -17,7 +17,7 @@ type filesCtrl struct {
 // GET /admin/files
 func (c *filesCtrl) Get() mvc.View {
 	return mvc.View{
-		Name: "tpl/file.html",
+		Name: "admin/html/file.html",
 		Data: iris.Map{
 			"tab": file,
 		},

@@ -14,7 +14,7 @@ type tagCtrl struct {
 
 func (c *tagCtrl) Get() mvc.View {
 	return mvc.View{
-		Name: "tpl/tag.html",
+		Name: "admin/html/tag.html",
 		Data: iris.Map{
 			"tab": tag,
 		},

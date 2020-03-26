@@ -15,7 +15,7 @@ type prefCtrl struct {
 // GET /admin/preferences
 func (c *prefCtrl) Get() mvc.View {
 	return mvc.View{
-		Name: "tpl/preference.html",
+		Name: "admin/html/preference.html",
 		Data: iris.Map{
 			"tab": preference,
 		},
@@ -41,6 +41,7 @@ func patchPref(ctx iris.Context) {
 	pp.BlogName = p.BlogName
 	pp.AdminPageName = p.AdminPageName
 	pp.AboutPostID = p.AboutPostID
+	pp.Email = p.Email
 
 	if err := pp.Save(); err != nil {
 		ctx.StatusCode(iris.StatusInternalServerError)

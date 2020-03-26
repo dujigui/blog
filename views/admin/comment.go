@@ -15,7 +15,7 @@ type cmtCtrl struct {
 // GET /admin/comments
 func (c *cmtCtrl) Get() mvc.View {
 	return mvc.View{
-		Name: "tpl/comment.html",
+		Name: "admin/html/comment.html",
 		Data: iris.Map{
 			"tab": comment,
 		},

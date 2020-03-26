@@ -19,9 +19,9 @@ type postsCtrl struct {
 // GET /admin/posts
 func (c *postsCtrl) Get() mvc.View {
 	return mvc.View{
-		Name: "tpl/post_list.html",
+		Name: "admin/html/post_list.html",
 		Data: iris.Map{
-			"tab":            postList,
+			"tab": postList,
 		},
 	}
 }
@@ -29,9 +29,9 @@ func (c *postsCtrl) Get() mvc.View {
 // GET /admin/posts/editor
 func (c *postsCtrl) GetEditor() mvc.View {
 	return mvc.View{
-		Name: "tpl/post_editor.html",
+		Name: "admin/html/post_editor.html",
 		Data: iris.Map{
-			"tab":            postEditor,
+			"tab": postEditor,
 		},
 	}
 }
@@ -44,10 +44,10 @@ func (c *postsCtrl) GetEditorBy(id int) mvc.View {
 	}
 
 	return mvc.View{
-		Name: "tpl/post_editor.html",
+		Name: "admin/html/post_editor.html",
 		Data: iris.Map{
-			"tab":            postEditor,
-			"Post":           p,
+			"tab":  postEditor,
+			"Post": p,
 		},
 	}
 }
@@ -176,7 +176,7 @@ func listPost(ctx iris.Context) {
 		if len(sRune) > 100 {
 			s = string(sRune[:100]) + "..."
 		}
-		ppp := formPost{Post:posts[i], Content:s}
+		ppp := formPost{Post: posts[i], Content: s}
 		pp = append(pp, ppp)
 	}
 	ctx.JSON(Result(true, "ok", pp, "page", page, "limit", limit, "total", total))
@@ -213,11 +213,10 @@ func getPost(ctx iris.Context) {
 		ctx.JSON(Result(false, err.Error(), nil))
 		return
 	}
-	pf := formPost{Post:p, Content:string(p.Content)}
+	pf := formPost{Post: p, Content: string(p.Content)}
 
 	ctx.JSON(Result(true, "ok", pf))
 }
-
 
 func markdown(ctx iris.Context) {
 	d, _ := ctx.GetBody()

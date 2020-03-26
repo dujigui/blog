@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	. "github.com/dujigui/blog/admin"
 	. "github.com/dujigui/blog/gateway"
 	. "github.com/dujigui/blog/services/cfg"
 	. "github.com/dujigui/blog/services/logs"
-	. "github.com/dujigui/blog/visitor"
+	. "github.com/dujigui/blog/views"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/recover"
 )
@@ -17,9 +16,7 @@ func main() {
 	app.Use(recover.New())
 	app.Use(ReqLogger())
 	app.Use(Gateway)
-	Admin(app)
-	Visitor(app)
-	app.HandleDir("/files", Config().GetString("files"))
+	Views(app)
 	host := Config().GetString("host")
 	port := Config().GetString("port")
 	_ = app.Run(iris.Addr(fmt.Sprintf("%s:%s", host, port)), iris.WithoutServerError(iris.ErrServerClosed))
@@ -35,6 +32,48 @@ func main() {
 	for rows.Next() {
 		rows.Scan(&id, &fn, &hashed)
 		db.DB().Exec("update files set hashed=? where id=?", hashed + filepath.Ext(fn), id)
+	}
+	rows.Close()
+}
+
+func renameCover() {
+	rows, err := db.DB().Query("select id,cover from posts")
+	if err != nil {
+		log.Fatal(err)
+	}
+	var id int
+	var cover string
+	for rows.Next() {
+		rows.Scan(&id, &cover)
+		if strings.HasPrefix(cover, "/attachment") {
+			cover = strings.Replace(cover, "/attachment", "/files", -1)
+			db.DB().Exec("update posts set cover=? where id=?",cover, id)
+		}
+	}
+	rows.Close()
+}
+
+func reType() {
+	rows, err := db.DB().Query("select id,title, description, type from posts")
+	if err != nil {
+		log.Fatal(err)
+	}
+	var id, t int
+	var title, description string
+	for rows.Next() {
+		rows.Scan(&id, &title, &description, &t)
+		if title == "" {
+			if description == "" {
+				//fmt.Printf("should=3 now=%d title=%s desc=%s\n", t, title, description)
+				db.DB().Exec("update posts set type=? where id=?",3, id)
+				continue
+			}
+			//fmt.Printf("should=2 now=%d title=%s desc=%s\n", t, title, description)
+			db.DB().Exec("update posts set type=? where id=?",2, id)
+			continue
+		}
+		//fmt.Printf("should=1 now=%d title=%s desc=%s\n", t, title, description)
+		db.DB().Exec("update posts set type=? where id=?",1, id)
 	}
 	rows.Close()
 }*/

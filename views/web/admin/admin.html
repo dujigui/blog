@@ -6,7 +6,7 @@
     <title></title>
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="/backyard/css/admin.css">
-    <link rel="stylesheet" href="/backyard/css/prism.css">
+    <link rel="stylesheet" href="/prism/prism.css">
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -16,7 +16,7 @@
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo">{{getConfig.AdminPageName}}</div>
+        <div class="layui-logo">{{pref.AdminPageName}}</div>
 
         <!-- 功能菜单 -->
         <ul class="layui-nav layui-layout-left">
@@ -63,15 +63,16 @@
     <div class="layui-body" style="left: 0; bottom: 0;">
         {{ yield }}
     </div>
+
 </div>
 </body>
 <script>
     var $;
     var toast;
     var tab = {{.tab}};
-    var apn = {{getConfig.AdminPageName}};
+    var apn = {{pref.AdminPageName}};
 </script>
 <script src="/layui/layui.js"></script>
 <script src="/backyard/js/admin.js"></script>
-<script src="/backyard/js/prism.js"></script>
+<script src="/prism/prism.js"></script>
 </html>

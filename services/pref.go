@@ -20,6 +20,7 @@ type Preferences struct {
 	AdminPageName string `json:"admin_page_name" form:"admin_page_name"`
 	AboutPostID   int    `json:"about_id" form:"about_id"`
 	Init          int64  `json:"init"`
+	Email         string `json:"email"`
 }
 
 func init() {
