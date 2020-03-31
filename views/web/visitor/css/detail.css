@@ -1,0 +1,164 @@
+/*题图*/
+.detail-image {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .detail-image {
+        height: 250px;
+    }
+}
+
+/*正文*/
+.content {
+    font-family: 'Noto Sans SC', sans-serif;
+}
+
+.content h1 {
+    text-align: center;
+    margin: 20px 0;
+}
+
+@media (min-width: 768px) {
+    .content {
+        width: 768px !important;
+    }
+}
+
+.markdown {
+
+}
+
+.markdown h2 {
+    text-align: center;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    margin-bottom: 30px;
+}
+
+.markdown h3 {
+    font-size: 1.25em;
+    margin-bottom: 30px;
+}
+
+.markdown p img {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.markdown p {
+    margin-bottom: 30px;
+    line-height: 1.7em;
+    font-size: 1em;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "PingFang SC", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", sans-serif;
+    color: #444443;
+}
+
+.markdown > blockquote {
+    border-left: 5px solid #455A64;
+    background: #F5f5f5;
+    font-style: italic;
+    padding: 10px 20px;
+    margin: 0 0 20px;
+}
+
+.markdown pre {
+    margin-bottom: 30px;
+    border: 1px solid #ddd;
+}
+
+.markdown ol {
+    margin-bottom: 30px;
+}
+
+.markdown ul {
+    margin-bottom: 30px;
+}
+
+.markdown ol li {
+    list-style: decimal inside;
+}
+
+.markdown ul li {
+    list-style: disc inside;
+}
+
+
+/*评论分隔线*/
+.comment-divider {
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    font-size: 1.5em;
+    color: black;
+}
+
+.comment-divider::before, .comment-divider::after {
+    content: '';
+    display: inline-block;
+    width: 100%;
+    height: 1px;
+    position: absolute;
+    background: #ddd;
+    top: 50%;
+}
+
+.comment-divider::before {
+    margin-left: -10px;
+    transform: translateX(-100%);
+}
+
+.comment-divider::after {
+    margin-left: 10px;
+}
+
+/*评论列表*/
+.wrapper {
+    margin: 0 auto;
+    border-bottom: 1px dashed #ddd;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 0;
+}
+
+.img {
+    vertical-align: middle;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+}
+
+.text {
+    flex: 1;
+    padding-left: 10px;
+}
+
+.comment-info {
+    font-size: 10px;
+    color: #999999;
+}
+
+.comment-content {
+    font-size: 14px;
+    color: #444443;
+}
+
+.wrapper:last-child {
+    border: none;
+}
+
+.login-button {
+    margin: 10px 0 50px 0;
+}
+
+.comment-button {
+    margin: 10px 0 50px 0;
+}
+

@@ -10,6 +10,8 @@ const (
 	home = "home"
 	search = "search"
 	about = "about"
+	detail = "detail"
+	none = "none"
 )
 
 func Visitor(app *iris.Application) {
@@ -17,5 +19,14 @@ func Visitor(app *iris.Application) {
 	app.HandleDir("/visitor/js", "views/web/visitor/js")
 
 	hp := app.Party("/").Layout("visitor/visitor.html")
-	mvc.New(hp).Handle(new(visitorCtr))
+	mvc.New(hp).Handle(new(homeCtrl))
+
+	sp := hp.Party("/search")
+	mvc.New(sp).Handle(new(searchCtrl))
+
+	dp := hp.Party("/posts")
+	mvc.New(dp).Handle(new(detailCtrl))
+
+	ap := hp.Party("/about")
+	mvc.New(ap).Handle(new(aboutCtrl))
 }

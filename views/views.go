@@ -15,6 +15,7 @@ func Views(app *iris.Application) {
 	app.HandleDir("/", "views/favicon")
 	app.HandleDir("/layui", "views/layui")
 	app.HandleDir("/prism", "views/prism")
+	app.HandleDir("/images", "views/images")
 
 
 	tplEngine := iris.HTML("views/web", ".html")

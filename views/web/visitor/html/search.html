@@ -1,0 +1,34 @@
+<link rel="stylesheet" href="/visitor/css/search.css">
+
+<div class="posts-container layui-container">
+    <div class="container">
+        <input type="text" class="search" placeholder="搜索标签名或文章名">
+        <div class="divider"></div>
+        <div class="tags">
+            {{range .tags}}
+                <a href="#{{.Name}}" title="{{.Name}}"><span class="layui-badge-rim tag">{{.Name}}</span></a>
+            {{end}}
+        </div>
+        <div>
+            {{range .tags}}
+                <div class="tags" id="{{.Name}}">
+                    <div class="tag-name-container">
+                        <i class="layui-icon layui-icon-note"></i>
+                        <span id="{{.Name}}" class="tag-name-text">{{.Name}}</span>
+                    </div>
+                    <ul>
+                        {{range .Posts}}
+                            {{if eq .Type 1}}
+                                <li><a href="/post/{{.ID}}" class="post-title">{{.Title}}</a></li>
+                            {{else if eq .Type 2}}
+                                <li><a href="/post/{{.ID}}" class="post-title">{{.Description}}</a></li>
+                            {{else if eq .Type 3}}
+                                <li><a href="/post/{{.ID}}" class="post-title">{{.Content}}</a></li>
+                            {{end}}
+                        {{end}}
+                    </ul>
+                </div>
+            {{end}}
+        </div>
+    </div>
+</div>

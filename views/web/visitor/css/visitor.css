@@ -1,3 +1,110 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar {
+    font-size: 18px;
+    background-color: white;
+    padding-bottom: 10px;
+    height: 50px;
+}
+
+.main-nav {
+    list-style-type: none;
+    display: none;
+    background-color: white;
+    padding-bottom: 15px;
+}
+
+.nav-links {
+    text-decoration: none;
+    color: grey;
+}
+
+.logo {
+    text-decoration: none;
+    color: black;
+}
+
+.main-nav li {
+    text-align: center;
+    margin: 15px auto;
+}
+
+.logo {
+    display: inline-block;
+    font-size: 22px;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.navbar-toggle {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    color: black;
+    font-size: 24px;
+}
+
+.active {
+    display: block;
+}
+
+.nav-divider {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: white;
+}
+
+@media screen and (min-width: 768px) {
+    .nav-container {
+        width: 768px;
+        margin: 0 auto;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 0;
+        height: 50px;
+        align-items: center;
+    }
+
+    .main-nav {
+        display: flex;
+        margin-right: 30px;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding-bottom: 0;
+    }
+
+    .main-nav li {
+        margin: 0;
+    }
+
+    .nav-links {
+        margin-left: 40px;
+    }
+
+    .logo {
+        margin-top: 0;
+    }
+
+    .navbar-toggle {
+        display: none;
+    }
+
+    .logo:hover {
+        color: black;
+    }
+
+    .nav-links:hover {
+        color: black;
+    }
+}
+
 .tab-selected {
     color: black;
 }
@@ -51,6 +158,7 @@ body {
 
 .posts-container {
     margin-top: 15px !important;
+    z-index: -1;
 }
 
 
@@ -131,4 +239,8 @@ body {
 
 .paging {
     text-align: center;
+}
+
+.hide {
+    display: none!important;
 }

@@ -136,8 +136,10 @@ func params(fp *formPost) (Params, string) {
 
 	p["cover"] = fp.Cover
 	p["is_published"] = fp.IsPublished
-	p["content"] = []byte(fp.Content)
 	p["tag_ids"] = fp.TagIDs
+
+	s := strings.ReplaceAll(fp.Content, "\r", "")
+	p["content"] = []byte(s)
 	return p, ""
 }
 

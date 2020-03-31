@@ -1,0 +1,45 @@
+.container {
+    background-color: white;
+    border-radius: 0.25rem;
+    padding: 0 15px;
+}
+
+.search {
+    width: 100%;
+    text-align: center;
+    border: none;
+    margin: 15px 0;
+}
+
+.divider {
+    border-bottom: 1px solid #cccccc;
+    margin: 0 10px
+}
+
+.tags {
+    margin: 10px 10px 0 10px;
+}
+
+.tag {
+    margin-top: 5px;
+}
+
+.tag-name-container {
+    padding-bottom: 5px;
+    margin-top: 30px;
+}
+
+.tag-name-text {
+    color: #13859F;
+    font-size: 18px;
+}
+
+.post-title {
+    font-size: 14px;
+    line-height: 2;
+    color: black;
+}
+
+.hide {
+    display: none;
+}

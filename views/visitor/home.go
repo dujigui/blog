@@ -9,11 +9,11 @@ import (
 	"github.com/kataras/iris/v12/mvc"
 )
 
-type visitorCtr struct {
+type homeCtrl struct {
 	Ctx iris.Context
 }
 
-func (c *visitorCtr) Get() mvc.View {
+func (c *homeCtrl) Get() mvc.View {
 	page := c.Ctx.URLParamIntDefault("page", 1)
 	limit := c.Ctx.URLParamIntDefault("limit", 10)
 

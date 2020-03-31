@@ -39,6 +39,7 @@ type Comments interface {
 	Delete(id int) error
 	Count() (int, error)
 	Page(page, limit int) ([]Comment, int, error)
+	RetrieveByPost(pid int) ([]Comment, error)
 }
 
 // todo 添加评论审核功能
@@ -88,14 +89,26 @@ func (m *mysql) Page(page, limit int) ([]Comment, int, error) {
 		limit = 50
 	}
 
-	var files = make([]Comment, 0)
-	var f Comment
+	var cs = make([]Comment, 0)
+	var c Comment
 	t, err := Page(tableName, "order by created desc", func(rows *sql.Rows) error {
-		err := rows.Scan(&f.ID, &f.PostID, &f.Content, &f.Created, &f.Updated)
+		err := rows.Scan(&c.ID, &c.PostID, &c.Content, &c.Created, &c.Updated)
 		if err == nil {
-			files = append(files, f)
+			cs = append(cs, c)
 		}
 		return err
 	}, limit, (page-1)*limit)
-	return files, t, err
+	return cs, t, err
+}
+
+func (m *mysql) RetrieveByPost(pid int) (cs []Comment, err error) {
+	var c Comment
+	err = Condition(tableName, "where post_id=?", func(rows *sql.Rows) error {
+		err := rows.Scan(&c.ID, &c.PostID, &c.Content, &c.Created, &c.Updated)
+		if err == nil {
+			cs = append(cs, c)
+		}
+		return err
+	}, pid)
+	return
 }

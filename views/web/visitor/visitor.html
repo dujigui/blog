@@ -3,31 +3,30 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="/visitor/css/nav.css">
+    <link href="/prism/prism.css" rel="stylesheet" />
     <link rel="stylesheet" href="/visitor/css/visitor.css">
     <link rel="stylesheet" href="/layui/css/layui.css">
     <meta name="description" content="{{ pref.BlogName }}">
     <meta name="author" content="{{ pref.Email }}">
+    <title>{{ pref.BlogName }}</title>
 </head>
 <body>
 <div class="nav-divider">
     <div class="nav-container">
         <nav class="navbar">
-            <a href="#" class="logo">{{ pref.BlogName }}</a>
+            <a href="/" class="logo">{{ pref.BlogName }}</a>
             <ul class="main-nav" id="js-menu">
                 <li><a href="/" class="nav-links{{if eq .tab "home"}} tab-selected{{end}}">Home</a></li>
                 <li><a href="/search" class="nav-links{{if eq .tab "search"}} tab-selected{{end}}">Search</a></li>
                 <li><a href="/about" class="nav-links{{if eq .tab "about"}} tab-selected{{end}}">About Me</a></li>
             </ul>
             <span class="navbar-toggle" id="js-navbar-toggle">
-            <i class="layui-icon layui-icon-more-vertical"></i>
-        </span>
+                <i class="layui-icon layui-icon-more-vertical"></i>
+            </span>
         </nav>
     </div>
 </div>
-<div class="posts-container layui-container">
-    {{yield}}
-</div>
+{{yield}}
 <footer>
     <p>Copyright &copy;
         <a class="footer-text" href="mailto:{{ pref.Email }}">{{ pref.BlogName }}</a> 2018 | <a href="http://www.miitbeian.gov.cn" class="footer-text">粤ICP备17144939号</a>
@@ -35,6 +34,13 @@
 </footer>
 <div id="tencent_analysis"></div>
 </body>
-<script src="/visitor/js/visitor.js"></script>
+<script>
+    var $;
+    var toast;
+    var tab = {{.tab}};
+    var bn = {{ pref.BlogName }};
+</script>
 <script src="/layui/layui.js"></script>
+<script src="/visitor/js/visitor.js"></script>
+<script src="/prism/prism.js"></script>
 </html>

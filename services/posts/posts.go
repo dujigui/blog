@@ -49,6 +49,7 @@ type Posts interface {
 	Page(page, limit int) ([]Post, int, error)
 	Count() (int, error)
 	Latest() (Post, error)
+	All() ([]Post, error)
 }
 
 //todo 引进author的概念
@@ -121,4 +122,17 @@ func (m *mysql) Latest() (p Post, err error) {
 		return rows.Scan(&p.ID, &p.Title, &p.Description, &p.Cover, &p.Created, &p.Updated, &p.IsPublished, &p.Type, &p.Content, &p.TagIDs)
 	})
 	return
+}
+
+func (m *mysql) All() ([]Post, error) {
+	var posts = make([]Post, 0)
+	var p Post
+	err := Condition(tableName, "", func(rows *sql.Rows) error {
+		err := rows.Scan(&p.ID, &p.Title, &p.Description, &p.Cover, &p.Created, &p.Updated, &p.IsPublished, &p.Type, &p.Content, &p.TagIDs)
+		if err == nil {
+			posts = append(posts, p)
+		}
+		return err
+	})
+	return posts, err
 }
