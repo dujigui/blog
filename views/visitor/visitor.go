@@ -4,6 +4,7 @@ import (
 
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
+	"github.com/kataras/iris/v12/view"
 )
 
 const (
@@ -29,4 +30,9 @@ func Visitor(app *iris.Application) {
 
 	ap := hp.Party("/about")
 	mvc.New(ap).Handle(new(aboutCtrl))
+
+	lp := app.Party("/login").Layout(view.NoLayout)
+	mvc.New(lp).Handle(new(loginCtrl))
+
+	app.Get("/qq", qq)
 }

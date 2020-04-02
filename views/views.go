@@ -3,7 +3,6 @@ package views
 import (
 	"github.com/dujigui/blog/services"
 	. "github.com/dujigui/blog/services/cfg"
-	. "github.com/dujigui/blog/services/tags"
 	. "github.com/dujigui/blog/views/admin"
 	. "github.com/dujigui/blog/views/visitor"
 	"github.com/kataras/iris/v12"
@@ -44,42 +43,8 @@ func Views(app *iris.Application) {
 	Visitor(app)
 }
 
-
-func submodule(expect1, cond1, expect2, cond2 string) bool {
-	return expect1 == cond1 && expect2 == cond2
-}
-
-func exists(o interface{}) bool {
-	return o != nil
-}
-
-func str(content []byte) string {
-	return string(content)
-}
-
-func content(length int, content []byte) string {
-	return truncate(length, string(content))
-}
-
-func truncate(length int, s string) string {
-	sRune := []rune(s)
-	if len(sRune) > length {
-		return string(sRune[:length]) + "..."
-	}
-	return s
-}
-
 func date(t time.Time) string {
 	return t.Format("2006-01-02 15:04:05")
-}
-
-func tagSelected(tags []Tag, tag Tag) bool {
-	for _, v := range tags {
-		if v.ID == tag.ID {
-			return true
-		}
-	}
-	return false
 }
 
 func add(i1, i2 int) int {

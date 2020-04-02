@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <link rel="stylesheet" href="/visitor/css/login.css">
+    <meta name="description" content="{{ pref.BlogName }}">
+    <meta name="author" content="{{ pref.Email }}">
+    <title>{{ pref.BlogName }}</title>
+</head>
+<body>
+
+<div class="center">
+    <div style="margin: 0 auto">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <input type="text" name="accout" required lay-verify="required" placeholder="请输入账号"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn" style="width: 190px" lay-submit lay-filter="formDemo">登录</button>
+            </div>
+        </form>
+        <div>
+            <img id="qq" style="width: 25px" src="/images/qq.svg">
+            <img id="google" style="margin-left: 5px; width: 20px" src="/images/google.svg">
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var $;
+    var toast;
+    var bn = {{ pref.BlogName }};
+
+    var qqState = {{.qqState}};
+    var qqAppId = {{pref.QQAppID}};
+    var redirectUri = {{pref.QQRedirect}};
+</script>
+<script src="/layui/layui.js"></script>
+<script src="/visitor/js/login.js"></script>
+</html>

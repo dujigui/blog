@@ -21,6 +21,9 @@ type Preferences struct {
 	AboutPostID   int    `json:"about_id" form:"about_id"`
 	Init          int64  `json:"init"`
 	Email         string `json:"email"`
+	QQAppID       string `json:"qq_app_id"`
+	QQKey         string `json:"qq_key"`
+	QQRedirect    string `json:"qq_redirect"`
 }
 
 func init() {
