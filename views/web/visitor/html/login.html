@@ -3,11 +3,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="/layui/css/layui.css">
-    <link rel="stylesheet" href="/visitor/css/login.css">
     <meta name="description" content="{{ pref.BlogName }}">
     <meta name="author" content="{{ pref.Email }}">
     <title>{{ pref.BlogName }}</title>
+
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <link rel="stylesheet" href="/visitor/css/login.css">
+
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
 </head>
 <body>
 
@@ -28,7 +33,7 @@
         </form>
         <div>
             <img id="qq" style="width: 25px" src="/images/qq.svg">
-            <img id="google" style="margin-left: 5px; width: 20px" src="/images/google.svg">
+            <img id="google" style="margin-left: 5px; width: 20px; display: none;" src="/images/google.svg">
         </div>
     </div>
 </div>

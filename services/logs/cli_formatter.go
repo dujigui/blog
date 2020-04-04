@@ -17,8 +17,13 @@ func (f *CliFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	atomic.AddUint32(&f.c, 1)
 
 	var b1, b2 []string
+	reqLog := make(map[string]interface{})
 	for k, v := range entry.Data {
 		if k == "tag" {
+			continue
+		}
+		if k == "reqLatency" || k == "reqStatus" || k == "reqIP" || k == "reqMethod" || k == "reqPath" {
+			reqLog[k] = v
 			continue
 		}
 		if v, ok := v.(time.Time); ok {
@@ -28,13 +33,21 @@ func (f *CliFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		b1 = append(b1, fmt.Sprintf("%s=%s", k, fmt.Sprint(v)))
 	}
 
+	var msg string
+	if len(reqLog) != 0 {
+		msg = fmt.Sprintf("%s %s %s %s %s",
+			reqLog["reqIP"],reqLog["reqMethod"],reqLog["reqPath"], reqLog["reqStatus"], reqLog["reqLatency"])
+	} else {
+		msg = entry.Message
+	}
+
 	// [fatal][tag][001][2006.01.02 15:04:05] message data
 	r := fmt.Sprintf("[%03d][%s][%s][%s] %s %s %s\n",
 		i,
 		strings.ToUpper(entry.Level.String()),
 		entry.Data["tag"],
 		entry.Time.Format("2006.01.02 15:04:05"),
-		entry.Message,
+		msg,
 		strings.Join(b1, " "),
 		strings.Join(b2, " "),
 	)

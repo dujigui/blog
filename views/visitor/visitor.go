@@ -35,4 +35,8 @@ func Visitor(app *iris.Application) {
 	mvc.New(lp).Handle(new(loginCtrl))
 
 	app.Get("/qq", qq)
+
+	ip := app.Party("/init").Layout(view.NoLayout)
+	mvc.New(ip).Handle(new(initCtrl))
+	ip.Post("/", Init)
 }

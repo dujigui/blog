@@ -37,6 +37,15 @@ func qq(ctx iris.Context) {
 	}
 	Logger().Trace("qq", "获取到 Authorize Code", Params{"authorizeCode": ac})
 
+	ss := ctx.URLParam("state")
+	state, err := DecodeState(ss)
+	if err != nil {
+		Logger().Error("qq", "State 检验失败", Params{"state": ss}.Err(err))
+		ctx.StatusCode(iris.StatusBadRequest)
+		ctx.WriteString("State 检验失败")
+		return
+	}
+
 	at, err := accessToken(ac)
 	if err != nil {
 		Logger().Error("qq", "无法获取 Access Token", Params{"authorizeCode": ac}.Err(err))
@@ -66,7 +75,7 @@ func qq(ctx iris.Context) {
 
 	d, err := json.MarshalIndent(ui, "", "  ")
 	fmt.Println(d, err)
-	ctx.Write(d)
+	ctx.Redirect(state.Redirect, iris.StatusFound)
 }
 
 func accessToken(ac string) (string, error) {

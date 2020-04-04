@@ -1,10 +1,10 @@
 package logs
 
 import (
-	"fmt"
 	. "github.com/dujigui/blog/utils"
+	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
-	ml "github.com/kataras/iris/v12/middleware/logger"
+	"strconv"
 	"time"
 )
 
@@ -27,33 +27,26 @@ type Log interface {
 }
 
 func ReqLogger() context.Handler {
-	return ml.New(
-		ml.Config{
-			Status:  true,
-			IP:      true,
-			Method:  true,
-			Path:    true,
-			Query:   true,
-			Columns: true,
-			LogFunc: LogReq,
-		})
+	return func(ctx iris.Context) {
+		start := time.Now()
+		ctx.Next()
+		end := time.Now()
+		latency := end.Sub(start)
+		status := strconv.Itoa(ctx.GetStatusCode())
+		ip := ctx.RemoteAddr()
+		method := ctx.Method()
+		path := ctx.Request().RequestURI
+		logReq(latency, status, ip, method, path)
+	}
 }
 
-func LogReq(endTime time.Time, latency time.Duration, status, ip, method, path string, message interface{}, headerMessage interface{}) {
+func logReq(latency time.Duration, status, ip, method, path string) {
 	p := Params{
-		"endTime": fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d", endTime.Year(), endTime.Month(), endTime.Day(), endTime.Hour(), endTime.Minute(), endTime.Second()),
-		"latency": latency,
-		"status":  status,
-		"ip":      ip,
-		"method":  method,
-		"path":    path,
+		"reqLatency": latency,
+		"reqStatus":  status,
+		"reqIP":      ip,
+		"reqMethod":  method,
+		"reqPath":    path,
 	}
-	if headerMessage != nil {
-		p["headerMessage"] = headerMessage
-	}
-	if message != nil {
-		p["message"] = message
-	}
-
 	Logger().Debug("logReq", "", p)
 }

@@ -24,6 +24,7 @@ type Preferences struct {
 	QQAppID       string `json:"qq_app_id"`
 	QQKey         string `json:"qq_key"`
 	QQRedirect    string `json:"qq_redirect"`
+	Salt          string `json:"salt"`
 }
 
 func init() {
@@ -42,7 +43,6 @@ func init() {
 		Logger().Warning("pref", "读取配置文件失败", Params{"dir": dir, "preName": prefName, "err": err})
 	} else {
 		Logger().Trace("pref", "读取配置文件成功", Params{"dir": dir, "preName": prefName})
-
 	}
 }
 

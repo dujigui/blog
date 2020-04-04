@@ -1,0 +1,18 @@
+body {
+    background: #ddd;
+}
+
+.layui-container h1 {
+    text-align: center;
+    margin: 20px 0
+}
+
+.layui-form {
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.required {
+    color: red;
+}
