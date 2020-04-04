@@ -6,12 +6,13 @@ import (
 	"fmt"
 	. "github.com/dujigui/blog/services"
 	. "github.com/dujigui/blog/services/logs"
+	. "github.com/dujigui/blog/services/users"
 	. "github.com/dujigui/blog/utils"
 	"github.com/kataras/iris/v12"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"strings"
+	"time"
 )
 
 const (
@@ -32,7 +33,7 @@ func qq(ctx iris.Context) {
 	if ac == "" {
 		Logger().Error("qq", "无法获取 Authorize Code", Params{"authorizeCode": ac})
 		ctx.StatusCode(iris.StatusBadRequest)
-		ctx.WriteString("Authorization Code 不能为空")
+		ctx.JSON(Result(false, "Authorization Code 不能为空", nil))
 		return
 	}
 	Logger().Trace("qq", "获取到 Authorize Code", Params{"authorizeCode": ac})
@@ -42,7 +43,7 @@ func qq(ctx iris.Context) {
 	if err != nil {
 		Logger().Error("qq", "State 检验失败", Params{"state": ss}.Err(err))
 		ctx.StatusCode(iris.StatusBadRequest)
-		ctx.WriteString("State 检验失败")
+		ctx.JSON(Result(false, "State 检验失败", nil))
 		return
 	}
 
@@ -50,7 +51,7 @@ func qq(ctx iris.Context) {
 	if err != nil {
 		Logger().Error("qq", "无法获取 Access Token", Params{"authorizeCode": ac}.Err(err))
 		ctx.StatusCode(iris.StatusInternalServerError)
-		ctx.WriteString("无法获取 Access Token")
+		ctx.JSON(Result(false, "无法获取 Access Token", nil))
 		return
 	}
 	Logger().Trace("qq", "获取到 Access Token", Params{"authorizeCode": ac, "accessToken": at})
@@ -59,7 +60,7 @@ func qq(ctx iris.Context) {
 	if err != nil {
 		Logger().Error("qq", "无法获取 open ID", Params{"authorizeCode": ac, "accessToken": at}.Err(err))
 		ctx.StatusCode(iris.StatusInternalServerError)
-		ctx.WriteString("无法获取 open ID")
+		ctx.JSON(Result(false, "无法获取 open ID", nil))
 		return
 	}
 	Logger().Trace("qq", "获取到 open ID", Params{"authorizeCode": ac, "accessToken": at})
@@ -68,14 +69,70 @@ func qq(ctx iris.Context) {
 	if err != nil {
 		Logger().Error("qq", "无法获取用户信息", Params{"authorizeCode": ac, "accessToken": at, "openID": oi}.Err(err))
 		ctx.StatusCode(iris.StatusInternalServerError)
-		ctx.WriteString("无法获取 open ID")
+		ctx.JSON(Result(false, "无法获取用户信息", nil))
 		return
 	}
-	Logger().Trace("qq", "获取到用户信息", Params{"authorizeCode": ac, "accessToken": at, "openID": oi})
 
-	d, err := json.MarshalIndent(ui, "", "  ")
-	fmt.Println(d, err)
-	ctx.Redirect(state.Redirect, iris.StatusFound)
+	qi, err := QQTable().ByOpenID(ui.OpenID)
+	if err != nil {
+		Logger().Error("qq", "无法获取数据库用户信息", Params{"authorizeCode": ac, "accessToken": at, "openID": oi}.Err(err))
+		ctx.StatusCode(iris.StatusInternalServerError)
+		ctx.JSON(Result(false, "无法获取数据库用户信息", nil))
+		return
+	}
+
+	p := Params{
+		"nickname":       ui.Nickname,
+		"gender":         ui.Gender,
+		"gender_type":    ui.GenderType,
+		"province":       ui.Province,
+		"city":           ui.City,
+		"year":           ui.Year,
+		"constellation":  ui.Constellation,
+		"figureurl":      ui.Figureurl,
+		"figureurl_1":    ui.Figureurl1,
+		"figureurl_2":    ui.Figureurl2,
+		"figureurl_qq_1": ui.FigureurlQq1,
+		"figureurl_qq_2": ui.FigureurlQq2,
+		"figureurl_qq":   ui.FigureurlQq,
+		"figureurl_type": ui.FigureurlType,
+		"OpenID":         ui.OpenID,
+		"AccessToken":    ui.AccessToken,
+	}
+	if qi.ID == 0 {
+		id, err := QQTable().Create(p)
+		if err != nil || id == 0 {
+			Logger().Error("qq", "无法创建 QQ 用户", p.Err(err))
+			ctx.StatusCode(iris.StatusInternalServerError)
+			ctx.JSON(Result(false, "无法创建 QQ 用户", nil))
+			return
+		}
+		id1, err1 := UserTable().Create(Params{"type": ViaQQ, "qq_id": id})
+		if err1 != nil || id1 == 0 {
+			Logger().Error("qq", "无法关联 QQ 用户", p.Err(err))
+			ctx.StatusCode(iris.StatusInternalServerError)
+			ctx.JSON(Result(false, "无法关联 QQ 用户", nil))
+			return
+		}
+		ctx.SetCookieKV("token", CreateToken(id1, false), iris.CookieExpires(time.Minute))
+		ctx.Redirect(state.Redirect, iris.StatusFound)
+	} else {
+		if err := QQTable().Update(qi.ID, p); err != nil {
+			Logger().Error("qq", "更新数据库失败", p.Err(err))
+			ctx.StatusCode(iris.StatusInternalServerError)
+			ctx.JSON(Result(false, "更新数据库失败", nil))
+			return
+		}
+		ui, err := UserTable().ByQQID(qi.ID)
+		if err != nil {
+			Logger().Error("qq", "此 QQ 号码未关联账号", p.Err(err))
+			ctx.StatusCode(iris.StatusInternalServerError)
+			ctx.JSON(Result(false, "此 QQ 号码未关联账号", nil))
+			return
+		}
+		ctx.SetCookieKV("token", CreateToken(ui.ID, ui.Admin), iris.CookieExpires(time.Minute))
+		ctx.Redirect(state.Redirect, iris.StatusFound)
+	}
 }
 
 func accessToken(ac string) (string, error) {
@@ -84,22 +141,23 @@ func accessToken(ac string) (string, error) {
 		return "", err
 	}
 
-	referer := resp.Header.Get("Referer")
-	if referer == "" {
-		return "", errors.New("无法获取 Referer")
-	}
-
-	s, err := url.Parse(referer)
+	// access_token=A91DA9A03B5F5003637DB3B1FD84D81C&expires_in=7776000&refresh_token=3EF3D730E9D42D4B61AB7D960092A85F
+	d, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
-
-	at := s.Query().Get("access_token")
-	if ac == "" {
-		return "", errors.New("无法从 Referer 获取 Access Token")
+	body := string(d)
+	start := strings.Index(body, "access_token=")
+	if start != -1 {
+		start += len("access_token=")
+		if len(body) > start {
+			end := strings.Index(body[start:], "&")
+			if end != -1 && len(body) > start+end {
+				return body[start : start+end], nil
+			}
+		}
 	}
-
-	return at, nil
+	return "", errors.New("无法解析 body")
 }
 
 func openID(accessToken string) (string, error) {
@@ -134,28 +192,23 @@ func openID(accessToken string) (string, error) {
 	return e.OpenID, nil
 }
 
-type qqInfo struct {
-	NickName string `json:"nickname"`
-	Avatar   string `json:"pic"`
-}
-
-func userInfo(accessToken, openID string) (qqInfo, error) {
-	var qi qqInfo
+func userInfo(accessToken, openID string) (QQInfo, error) {
+	var qu QQInfo
 
 	resp, err := http.Get(fmt.Sprintf(info, accessToken, Pref().QQAppID, openID))
 	if err != nil || resp.StatusCode != iris.StatusOK {
-		return qi, err
+		return qu, err
 	}
 	defer resp.Body.Close()
 
-	d, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return qi, err
+	if err := json.NewDecoder(resp.Body).Decode(&qu); err != nil {
+		return qu, err
+	}
+	if qu.Ret != 0 {
+		return qu, errors.New(qu.Msg)
 	}
 
-	if err := json.Unmarshal(d, &qi); err != nil {
-		return qi, err
-	}
-
-	return qi, nil
+	qu.OpenID = openID
+	qu.AccessToken = accessToken
+	return qu, nil
 }

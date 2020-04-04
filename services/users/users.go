@@ -15,13 +15,17 @@ const (
 	tableStmt = `create table if not exists %s
 (
     id       int primary key auto_increment not null,
-    username varchar(255)                   not null,
-    password varchar(255)                   not null,
+    username varchar(255),
+    password varchar(255),
     created  datetime                       not null default current_timestamp,
     updated  datetime                       not null default current_timestamp on update current_timestamp,
-    admin    boolean                        not null default false
-)`
-	tableName = "users"
+    admin    boolean                        not null default false,
+    type     int                            not null default 2 comment '1 账号密码注册; 2 qq注册;',
+	qq_id    int
+);`
+	tableName  = "users"
+	ViaAccount = 1
+	ViaQQ      = 2
 )
 
 func init() {
@@ -39,8 +43,10 @@ type Users interface {
 	Retrieve(id int) (User, error)
 	Update(id int, params Params) error
 	Delete(id int) error
+	//todo 删除
 	First() (User, error)
 	ByUsername(username string) (User, error)
+	ByQQID(id int) (User, error)
 }
 
 func HashPassword(password string) string {
@@ -74,6 +80,8 @@ type User struct {
 	Created  time.Time
 	Updated  time.Time
 	Admin    bool
+	Type     int
+	QQID     int
 }
 
 type mysql struct {
@@ -86,7 +94,8 @@ func (u *mysql) Create(params Params) (int, error) {
 func (u *mysql) Retrieve(id int) (User, error) {
 	var user User
 	err := Retrieve(tableName, id, func(rows *sql.Rows) error {
-		return rows.Scan(&user.ID, &user.Username, &user.Password, &user.Created, &user.Updated, &user.Admin)
+		return rows.Scan(&user.ID, &user.Username, &user.Password, &user.Created, &user.Updated,
+			&user.Admin, &user.Type, &user.QQID)
 	})
 	return user, err
 }
@@ -101,14 +110,24 @@ func (u *mysql) Delete(id int) error {
 
 func (u *mysql) First() (user User, err error) {
 	err = Condition(tableName, "order by created asc", func(rows *sql.Rows) error {
-		return rows.Scan(&user.ID, &user.Username, &user.Password, &user.Created, &user.Updated, &user.Admin)
+		return rows.Scan(&user.ID, &user.Username, &user.Password, &user.Created, &user.Updated,
+			&user.Admin, &user.Type, &user.QQID)
 	})
 	return
 }
 
 func (u *mysql) ByUsername(username string) (user User, err error) {
 	err = Condition(tableName, "where username=?", func(rows *sql.Rows) error {
-		return rows.Scan(&user.ID, &user.Username, &user.Password, &user.Created, &user.Updated, &user.Admin)
+		return rows.Scan(&user.ID, &user.Username, &user.Password, &user.Created, &user.Updated,
+			&user.Admin, &user.Type, &user.QQID)
 	}, username)
+	return
+}
+
+func (u *mysql) ByQQID(id int) (user User, err error) {
+	err = Condition(tableName, "where qq_id=?", func(rows *sql.Rows) error {
+		return rows.Scan(&user.ID, &user.Username, &user.Password, &user.Created, &user.Updated,
+			&user.Admin, &user.Type, &user.QQID)
+	}, id)
 	return
 }
