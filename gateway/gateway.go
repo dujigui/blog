@@ -1,13 +1,13 @@
 package gateway
 
 import (
+	"fmt"
 	. "github.com/dujigui/blog/services"
+	. "github.com/dujigui/blog/services/users"
 	"github.com/kataras/iris/v12/context"
+	"net/url"
+	"strconv"
 	"strings"
-)
-
-const (
-	ADMIN = "/admin"
 )
 
 // 401 unauthorized
@@ -30,17 +30,30 @@ func Gateway(ctx context.Context) {
 		ctx.Redirect("/init")
 		return
 	}
-	if strings.HasPrefix(ctx.Path(), "/admin")  {
-		if err := auth(ctx); err != nil {
-			ctx.Redirect("/login")
+	if strings.HasPrefix(ctx.Path(), "/admin") {
+		ok, id, admin := ParseToken(ctx.GetCookie("token"))
+		if !ok || !admin {
+			ctx.Redirect(fmt.Sprintf("/login?redirect=%s", url.QueryEscape(ctx.Path())))
 			return
 		}
+		ctx.Params().Set("id", strconv.Itoa(id))
+		ctx.Params().Set("admin", strconv.FormatBool(admin))
+		ctx.Params().Set("ok", strconv.FormatBool(ok))
 	}
+
+	if strings.HasPrefix(ctx.Path(), "/comments") {
+		ok, id, admin := ParseToken(ctx.GetCookie("token"))
+		if !ok {
+			ctx.Redirect(fmt.Sprintf("/login?redirect=%s", url.QueryEscape(ctx.Path())))
+			return
+		}
+		ctx.Params().Set("id", strconv.Itoa(id))
+		ctx.Params().Set("admin", strconv.FormatBool(admin))
+		ctx.Params().Set("ok", strconv.FormatBool(ok))
+	}
+	// todo 测试 ctx.Markdown()
 	// todo 添加用户评论权限检查
 
+	//ok, err := c.Ctx.Params().GetBool("ok")
 	ctx.Next()
-}
-
-func auth(ctx context.Context) error {
-	return nil
 }

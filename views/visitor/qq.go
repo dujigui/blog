@@ -12,7 +12,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"time"
 )
 
 const (
@@ -63,7 +62,7 @@ func qq(ctx iris.Context) {
 		ctx.JSON(Result(false, "无法获取 open ID", nil))
 		return
 	}
-	Logger().Trace("qq", "获取到 open ID", Params{"authorizeCode": ac, "accessToken": at})
+	Logger().Trace("qq", "获取到 open ID", Params{"authorizeCode": ac, "accessToken": at, "openID": oi})
 
 	ui, err := userInfo(at, oi)
 	if err != nil {
@@ -114,7 +113,7 @@ func qq(ctx iris.Context) {
 			ctx.JSON(Result(false, "无法关联 QQ 用户", nil))
 			return
 		}
-		ctx.SetCookieKV("token", CreateToken(id1, false), iris.CookieExpires(time.Minute))
+		ctx.SetCookieKV("token", CreateToken(id1, false), iris.CookieExpires(CookieExpire))
 		ctx.Redirect(state.Redirect, iris.StatusFound)
 	} else {
 		if err := QQTable().Update(qi.ID, p); err != nil {
@@ -130,14 +129,14 @@ func qq(ctx iris.Context) {
 			ctx.JSON(Result(false, "此 QQ 号码未关联账号", nil))
 			return
 		}
-		ctx.SetCookieKV("token", CreateToken(ui.ID, ui.Admin), iris.CookieExpires(time.Minute))
+		ctx.SetCookieKV("token", CreateToken(ui.ID, ui.Admin), iris.CookieExpires(CookieExpire))
 		ctx.Redirect(state.Redirect, iris.StatusFound)
 	}
 }
 
 func accessToken(ac string) (string, error) {
 	resp, err := http.Get(fmt.Sprintf(at, Pref().QQAppID, Pref().QQKey, ac, Pref().QQRedirect))
-	if err != nil || resp.StatusCode != iris.StatusFound {
+	if err != nil {
 		return "", err
 	}
 

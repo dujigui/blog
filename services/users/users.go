@@ -21,7 +21,7 @@ const (
     updated  datetime                       not null default current_timestamp on update current_timestamp,
     admin    boolean                        not null default false,
     type     int                            not null default 2 comment '1 账号密码注册; 2 qq注册;',
-	qq_id    int
+	qq_id    int                            not null default 0
 );`
 	tableName  = "users"
 	ViaAccount = 1
@@ -57,20 +57,20 @@ func HashPassword(password string) string {
 	return string(hash)
 }
 
-func ComparePassword(account, password string) bool {
+func ComparePassword(account, password string) (User, bool) {
 	u, err := UserTable().ByUsername(account)
 	if err != nil {
 		Logger().Trace("users", "无此用户", Params{"account": account, "password": password}.Err(err))
-		return false
+		return u, false
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	if err != nil {
 		Logger().Trace("users", "密码不正确", Params{"account": account, "password": password}.Err(err))
-		return false
+		return u, false
 	}
 
-	return true
+	return u, true
 }
 
 type User struct {

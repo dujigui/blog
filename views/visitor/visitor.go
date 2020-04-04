@@ -33,6 +33,7 @@ func Visitor(app *iris.Application) {
 
 	lp := app.Party("/login").Layout(view.NoLayout)
 	mvc.New(lp).Handle(new(loginCtrl))
+	lp.Post("/", Login)
 
 	app.Get("/qq", qq)
 

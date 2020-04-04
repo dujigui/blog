@@ -3,6 +3,11 @@ package users
 import (
 	"encoding/base64"
 	"encoding/json"
+	"time"
+)
+
+const (
+	CookieExpire = 24 * time.Hour
 )
 
 type c struct {
