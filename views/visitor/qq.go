@@ -113,7 +113,7 @@ func qq(ctx iris.Context) {
 			ctx.JSON(Result(false, "无法关联 QQ 用户", nil))
 			return
 		}
-		ctx.SetCookieKV("token", CreateToken(id1, false), iris.CookieExpires(CookieExpire))
+		ctx.SetCookieKV("token", CreateToken(id1, false, CookieExpire), iris.CookieExpires(CookieExpire))
 		ctx.Redirect(state.Redirect, iris.StatusFound)
 	} else {
 		if err := QQTable().Update(qi.ID, p); err != nil {
@@ -129,13 +129,13 @@ func qq(ctx iris.Context) {
 			ctx.JSON(Result(false, "此 QQ 号码未关联账号", nil))
 			return
 		}
-		ctx.SetCookieKV("token", CreateToken(ui.ID, ui.Admin), iris.CookieExpires(CookieExpire))
+		ctx.SetCookieKV("token", CreateToken(ui.ID, ui.Admin, CookieExpire), iris.CookieExpires(CookieExpire))
 		ctx.Redirect(state.Redirect, iris.StatusFound)
 	}
 }
 
 func accessToken(ac string) (string, error) {
-	resp, err := http.Get(fmt.Sprintf(at, Pref().QQAppID, Pref().QQKey, ac, Pref().QQRedirect))
+	resp, err := http.Get(fmt.Sprintf(at, Pref().QQAppID, Pref().QQAppKey, ac, Pref().QQRedirect))
 	if err != nil {
 		return "", err
 	}

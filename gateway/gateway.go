@@ -10,9 +10,6 @@ import (
 	"strings"
 )
 
-// 401 unauthorized
-// 403 forbidden
-// https://docs.iris-go.com/iris/request-authentication
 func Gateway(ctx context.Context) {
 	if strings.HasPrefix(ctx.Path(), "/files") ||
 		strings.HasPrefix(ctx.Path(), "/layui") ||
@@ -26,34 +23,30 @@ func Gateway(ctx context.Context) {
 		return
 	}
 
-	if Pref().Init == 0 && ctx.Path() != "/init" {
+	if Pref().Init <= 0 && ctx.Path() != "/init" {
 		ctx.Redirect("/init")
 		return
 	}
+
+	ok, id, admin := ParseToken(ctx.GetCookie("token"))
+	if ok {
+		ctx.Params().Set("id", strconv.Itoa(id))
+		ctx.Params().Set("admin", strconv.FormatBool(admin))
+	}
+	ctx.Params().Set("ok", strconv.FormatBool(ok))
+
 	if strings.HasPrefix(ctx.Path(), "/admin") {
-		ok, id, admin := ParseToken(ctx.GetCookie("token"))
 		if !ok || !admin {
 			ctx.Redirect(fmt.Sprintf("/login?redirect=%s", url.QueryEscape(ctx.Path())))
 			return
 		}
-		ctx.Params().Set("id", strconv.Itoa(id))
-		ctx.Params().Set("admin", strconv.FormatBool(admin))
-		ctx.Params().Set("ok", strconv.FormatBool(ok))
 	}
 
 	if strings.HasPrefix(ctx.Path(), "/comments") {
-		ok, id, admin := ParseToken(ctx.GetCookie("token"))
 		if !ok {
 			ctx.Redirect(fmt.Sprintf("/login?redirect=%s", url.QueryEscape(ctx.Path())))
 			return
 		}
-		ctx.Params().Set("id", strconv.Itoa(id))
-		ctx.Params().Set("admin", strconv.FormatBool(admin))
-		ctx.Params().Set("ok", strconv.FormatBool(ok))
 	}
-	// todo 测试 ctx.Markdown()
-	// todo 添加用户评论权限检查
-
-	//ok, err := c.Ctx.Params().GetBool("ok")
 	ctx.Next()
 }

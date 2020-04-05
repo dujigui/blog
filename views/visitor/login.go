@@ -38,6 +38,7 @@ func (c *loginCtrl) Get() mvc.View {
 	}
 }
 
+// todo 检查所有用户的输入，防止sql注入和xss攻击
 func Login(ctx iris.Context) {
 	type form struct {
 		Account  string `form:"account"`
@@ -64,7 +65,11 @@ func Login(ctx iris.Context) {
 		return
 	}
 
+	ctx.SetCookieKV("token", CreateToken(u.ID, u.Admin, CookieExpire), iris.CookieExpires(CookieExpire))
+	ctx.JSON(Result(true, "ok", nil))
+}
 
-	ctx.SetCookieKV("token", CreateToken(u.ID, u.Admin), iris.CookieExpires(CookieExpire))
+func Logout(ctx iris.Context) {
+	ctx.RemoveCookie("token")
 	ctx.JSON(Result(true, "ok", nil))
 }

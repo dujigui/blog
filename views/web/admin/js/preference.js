@@ -7,11 +7,15 @@ layui.use('form', function () {
         url: "/admin/preferences/get",
         context: document.body,
         success: function (result) {
+            result = result.result;
             form.val("prefForm", {
-                "blog_name": result.result.blog_name,
-                "admin_page_name": result.result.admin_page_name,
-                "about_id": result.result.about_id,
-                "email": result.result.email,
+                "blog_name": result.blog_name,
+                "admin_page_name": result.admin_page_name,
+                "about_id": result.about_id,
+                "email": result.email,
+                "qq_app_id": result.qq_app_id,
+                "qq_app_key": result.qq_app_key,
+                "qq_redirect": result.qq_redirect
             });
             form.render();
         },
@@ -33,6 +37,9 @@ layui.use('form', function () {
                 "admin_page_name": data.admin_page_name,
                 "about_id": parseInt(data.about_id),
                 "email": data.email,
+                "qq_app_id": data.qq_app_id,
+                "qq_app_key": data.qq_app_key,
+                "qq_redirect": data.qq_redirect
             }),
             success: function (result) {
                 console.log(result);

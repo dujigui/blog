@@ -30,6 +30,7 @@ func Create(table string, params Params) (int, error) {
 		Logger().Error("mysql", "准备插入数据失败", Params{"table": table, "err": err}.AddAll(params))
 		return 0, err
 	}
+	defer stmt.Close()
 
 	r, err := stmt.Exec(values...)
 	if err != nil {

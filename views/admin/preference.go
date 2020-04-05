@@ -42,6 +42,9 @@ func patchPref(ctx iris.Context) {
 	pp.AdminPageName = p.AdminPageName
 	pp.AboutPostID = p.AboutPostID
 	pp.Email = p.Email
+	pp.QQAppID = p.QQAppID
+	pp.QQAppKey = p.QQAppKey
+	pp.QQRedirect = p.QQRedirect
 
 	if err := pp.Save(); err != nil {
 		ctx.StatusCode(iris.StatusInternalServerError)

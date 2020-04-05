@@ -63,8 +63,13 @@ func admin(account, password string) error {
 	if u.ID != 0 {
 		return errors.New("用户名已存在")
 	}
-	id, err := UserTable().Create(
-		Params{"username": account, "password": HashPassword(password), "admin": true, "type":ViaAccount})
+	id, err := UserTable().Create(Params{
+		"username": account,
+		"password": HashPassword(password),
+		"admin":    true,
+		"type":     ViaAccount,
+		"nickname": account,
+	})
 	if err != nil {
 		return err
 	}

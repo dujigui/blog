@@ -4,6 +4,7 @@ import (
 	. "github.com/dujigui/blog/services/comments"
 	. "github.com/dujigui/blog/services/posts"
 	. "github.com/dujigui/blog/services/tags"
+	. "github.com/dujigui/blog/services/users"
 	. "github.com/dujigui/blog/utils"
 	"github.com/iris-contrib/blackfriday"
 	"github.com/kataras/iris/v12"
@@ -28,18 +29,50 @@ func (c *detailCtrl) GetBy(id int) mvc.View {
 	}
 	p.Tags = ts
 
-	cs, err := CommentTable().RetrieveByPost(p.ID)
+	cs, err := CommentTable().ByPost(p.ID)
 	if err != nil {
 		cs = make([]Comment, 0)
+	}
+
+	for k, v := range cs {
+		u, err := UserTable().Retrieve(v.UserID)
+		if err != nil {
+			cs[k].User = CommentUser{
+				ID:       0,
+				Avatar:   "/images/avatar.svg",
+				Nickname: "unknown",
+			}
+			continue
+		}
+
+		cs[k].User = CommentUser{
+			ID:       u.ID,
+			Avatar:   u.Avatar,
+			Nickname: u.Nickname,
+		}
+	}
+
+	ok := c.Ctx.Params().GetBoolDefault("ok", false)
+	uid := c.Ctx.Params().GetIntDefault("id", 0)
+	var user CommentUser
+	if ok && uid != 0 {
+		u, err := UserTable().Retrieve(uid)
+		if err == nil {
+			user.ID = u.ID
+			user.Nickname = u.Nickname
+			user.Avatar = u.Avatar
+		}
 	}
 
 	return mvc.View{
 		Name: "visitor/html/detail.html",
 		Data: iris.Map{
-			"tab":      detail,
-			"post":     p,
-			"comments": cs,
-			"content":  template.HTML(string(blackfriday.Run(p.Content))),
+			"tab":       detail,
+			"post":      p,
+			"comments":  cs,
+			"content":   template.HTML(string(blackfriday.Run(p.Content))),
+			"needLogin": !ok || uid == 0,
+			"user":      user,
 		},
 	}
 }

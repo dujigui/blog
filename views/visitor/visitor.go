@@ -19,6 +19,10 @@ func Visitor(app *iris.Application) {
 	app.HandleDir("/visitor/css", "views/web/visitor/css")
 	app.HandleDir("/visitor/js", "views/web/visitor/js")
 
+	ip := app.Party("/init").Layout(view.NoLayout)
+	mvc.New(ip).Handle(new(initCtrl))
+	ip.Post("/", Init)
+
 	hp := app.Party("/").Layout("visitor/visitor.html")
 	mvc.New(hp).Handle(new(homeCtrl))
 
@@ -33,11 +37,9 @@ func Visitor(app *iris.Application) {
 
 	lp := app.Party("/login").Layout(view.NoLayout)
 	mvc.New(lp).Handle(new(loginCtrl))
-	lp.Post("/", Login)
+	app.Post("/login", Login)
+	app.Delete("/logout", Logout)
 
 	app.Get("/qq", qq)
-
-	ip := app.Party("/init").Layout(view.NoLayout)
-	mvc.New(ip).Handle(new(initCtrl))
-	ip.Post("/", Init)
+	app.Post("/comments", postComment)
 }

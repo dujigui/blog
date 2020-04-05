@@ -22,7 +22,7 @@ type Preferences struct {
 	Init          int64  `json:"init"`
 	Email         string `json:"email"`
 	QQAppID       string `json:"qq_app_id"`
-	QQKey         string `json:"qq_key"`
+	QQAppKey      string `json:"qq_app_key"`
 	QQRedirect    string `json:"qq_redirect"`
 	Salt          string `json:"salt"`
 }

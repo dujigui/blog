@@ -15,10 +15,12 @@ const (
 (
     id      int primary key auto_increment not null,
     post_id int                            not null,
+    user_id int                            not null,
     content varchar(255)                   not null,
-    created datetime not null default current_timestamp,
-    updated datetime not null default current_timestamp on update current_timestamp
-)`
+    inspect boolean                        not null default false,
+    created datetime                       not null default current_timestamp,
+    updated datetime                       not null default current_timestamp on update current_timestamp
+);`
 	tableName = "comments"
 )
 
@@ -39,16 +41,24 @@ type Comments interface {
 	Delete(id int) error
 	Count() (int, error)
 	Page(page, limit int) ([]Comment, int, error)
-	RetrieveByPost(pid int) ([]Comment, error)
+	ByPost(pid int) ([]Comment, error)
 }
 
-// todo 添加评论审核功能
 type Comment struct {
 	ID      int
 	PostID  int
+	UserID  int
 	Content string
+	Inspect bool
 	Created time.Time
 	Updated time.Time
+	User    CommentUser
+}
+
+type CommentUser struct {
+	ID       int
+	Avatar   string
+	Nickname string
 }
 
 type mysql struct {
@@ -61,7 +71,7 @@ func (m *mysql) Create(params Params) (int, error) {
 func (m *mysql) Retrieve(id int) (Comment, error) {
 	var c Comment
 	err := Retrieve(tableName, id, func(rows *sql.Rows) error {
-		return rows.Scan(&c.ID, &c.PostID, &c.Content, &c.Created, &c.Updated)
+		return scan(&c, rows)
 	})
 	return c, err
 }
@@ -92,7 +102,7 @@ func (m *mysql) Page(page, limit int) ([]Comment, int, error) {
 	var cs = make([]Comment, 0)
 	var c Comment
 	t, err := Page(tableName, "order by created desc", func(rows *sql.Rows) error {
-		err := rows.Scan(&c.ID, &c.PostID, &c.Content, &c.Created, &c.Updated)
+		err := scan(&c, rows)
 		if err == nil {
 			cs = append(cs, c)
 		}
@@ -101,14 +111,18 @@ func (m *mysql) Page(page, limit int) ([]Comment, int, error) {
 	return cs, t, err
 }
 
-func (m *mysql) RetrieveByPost(pid int) (cs []Comment, err error) {
+func (m *mysql) ByPost(pid int) (cs []Comment, err error) {
 	var c Comment
 	err = Condition(tableName, "where post_id=?", func(rows *sql.Rows) error {
-		err := rows.Scan(&c.ID, &c.PostID, &c.Content, &c.Created, &c.Updated)
+		err := scan(&c, rows)
 		if err == nil {
 			cs = append(cs, c)
 		}
 		return err
 	}, pid)
 	return
+}
+
+func scan(c *Comment, rows *sql.Rows) error {
+	return rows.Scan(&c.ID, &c.PostID, &c.UserID, &c.Content, &c.Inspect, &c.Created, &c.Updated)
 }

@@ -150,8 +150,24 @@
     color: #444443;
 }
 
-.wrapper:last-child {
-    border: none;
+.formContainer {
+    display: flex;
+    padding: 20px 0;
+}
+
+.left {
+
+}
+
+.right {
+    width: 100%;
+    padding-left: 10px;
+}
+
+.comment-avatar {
+    width: 50px;
+    height: 50px;
+    vertical-align: top;
 }
 
 .login-button {

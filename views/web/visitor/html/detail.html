@@ -12,19 +12,29 @@
     <div>
         {{range .comments}}
             <div class="wrapper">
-                <img class="img" src="/images/person-black-18dp.svg">
+                <img class="img" src="{{.User.Avatar}}">
                 <div class="text">
-                    <p class="comment-info">xxx 创建于 {{date .Created}}</p>
+                    <p class="comment-info">{{.User.Nickname}} 创建于 {{date .Created}}</p>
                     <p class="comment-content">{{.Content}}</p>
                 </div>
             </div>
         {{end}}
     </div>
-    <button id="btnLogin" class="layui-btn comment-button">登录发表评论</button>
-    <form class="layui-form hide">
-        <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
-        <button class="layui-btn comment-button" lay-submit lay-filter="formDemo">发表</button>
-    </form>
+    <button id="btnLogin" class="layui-btn comment-button{{if not .needLogin}} hide{{end}}">登录发表评论</button>
+
+    <div class="formContainer{{if .needLogin}} hide{{end}}">
+        <div class="left">
+            <img class="comment-avatar" src="{{.user.Avatar}}">
+        </div>
+        <div class="right">
+            <p style="margin-bottom: 10px">{{.user.Nickname}} <span id="btnLogout" style="color: deepskyblue;">退出登录</span></p>
+            <form class="layui-form">
+                <input type="hidden" name="post_id" value="{{.post.ID}}">
+                <textarea name="content" placeholder="请输入您的评论" class="layui-textarea"></textarea>
+                <button class="layui-btn comment-button" lay-submit lay-filter="formDemo">发表</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 
