@@ -12,14 +12,14 @@ layui.use(['element', 'layer'], function () {
     var eScript = document.createElement('script');
     switch (tab) {
         case 'home':
-            document.title = bn + 'Home';
+            document.title = bn + ' - Home';
             break;
         case 'search':
             eScript.src = '/visitor/js/search.js';
-            document.title = bn + 'Search';
+            document.title = bn + ' - Search';
             break;
         case 'about':
-            document.title = bn + 'About Me';
+            document.title = bn + ' - About Me';
             break;
         case 'detail':
             eScript.src = '/visitor/js/detail.js';

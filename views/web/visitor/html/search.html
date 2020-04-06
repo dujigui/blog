@@ -18,13 +18,17 @@
                     </div>
                     <ul>
                         {{range .Posts}}
-                            {{if eq .Type 1}}
-                                <li><a href="/post/{{.ID}}" class="post-title">{{.Title}}</a></li>
-                            {{else if eq .Type 2}}
-                                <li><a href="/post/{{.ID}}" class="post-title">{{.Description}}</a></li>
-                            {{else if eq .Type 3}}
-                                <li><a href="/post/{{.ID}}" class="post-title">{{.Content}}</a></li>
-                            {{end}}
+                            <li>
+                                <a href="/posts/{{.ID}}" class="post-title">
+                                    {{if eq .Type 1}}
+                                        {{.Title}}
+                                    {{else if eq .Type 2}}
+                                        {{.Description}}
+                                    {{else if eq .Type 3}}
+                                        {{.Content}}
+                                    {{end}}
+                                </a>
+                            </li>
                         {{end}}
                     </ul>
                 </div>

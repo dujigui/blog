@@ -1,53 +1,51 @@
 <div class="posts-container layui-container">
     {{range .posts }}
         {{if eq .Type 1}}
-            <div class="layui-row item">
-                <div class="layui-col-sm4">
-                    <div class="image">
-                        <img class="crop" src="{{.Cover}}" alt="">
+            <a href="/posts/{{.ID}}">
+                <div class="layui-row item">
+                    <div class="layui-col-sm4">
+                        <div class="image">
+                            <img class="crop" src="{{.Cover}}" alt="">
+                        </div>
                     </div>
-                </div>
-                <div class="layui-col-sm8 info">
-                    <a href="/posts/{{.ID}}">
+                    <div class="layui-col-sm8 info">
                         <h2 class="info-title">{{.Title}}</h2>
                         <p class="info-desc">{{.Description}}</p>
-                    </a>
-                    <div class="info-tags">
-                        {{range .Tags}}
-                            <a href="/search#{{.Name}}">
-                                <span class="info-tag">#{{.Name}}</span>
-                            </a>
-                        {{end}}
+                        <div class="info-tags">
+                            {{range .Tags}}
+                                <a href="/search#{{.Name}}"><span class="info-tag">#{{.Name}}</span></a>
+                            {{end}}
+                        </div>
+                        <span class="info-datetime">{{date .Created}}</span>
                     </div>
-                    <span class="info-datetime">{{date .Created}}</span>
                 </div>
-            </div>
+            </a>
         {{else if eq .Type 2}}
-            <div class="layui-row item">
-                <div class="layui-col-sm4">
-                    <div class="image">
-                        <img class="crop" src="{{.Cover}}" alt="">
+            <a href="/posts/{{.ID}}">
+                <div class="layui-row item">
+                    <div class="layui-col-sm4">
+                        <div class="image">
+                            <img class="crop" src="{{.Cover}}" alt="">
+                        </div>
                     </div>
-                </div>
-                <div class="layui-col-sm8 info">
-                    <a href="/posts/{{.ID}}">
+                    <div class="layui-col-sm8 info">
                         <h2 class="info-title">{{.Description}}</h2>
-                    </a>
-                    <div class="info-tags">
-                        {{range .Tags}}
-                            <a href="/search#{{.Name}}">
-                                <span class="info-tag">#{{.Name}}</span>
-                            </a>
-                        {{end}}
+                        <div class="info-tags">
+                            {{range .Tags}}
+                                <a href="/search#{{.Name}}"><span class="info-tag">#{{.Name}}</span></a>
+                            {{end}}
+                        </div>
+                        <span class="info-datetime">{{date .Created}}</span>
                     </div>
-                    <span class="info-datetime">{{date .Created}}</span>
                 </div>
-            </div>
+            </a>
         {{else if eq .Type 3}}
-            <div class="layui-row item moment">
-                <p class="moment-content">{{.Content}}</p>
-                <img class="moment-image" src="{{.Cover}}" alt="">
-            </div>
+            <a href="/posts/{{.ID}}">
+                <div class="layui-row item moment">
+                    <p class="moment-content">{{.Content}}</p>
+                    <img class="moment-image" src="{{.Cover}}" alt="">
+                </div>
+            </a>
         {{end}}
     {{end}}
 
@@ -57,8 +55,8 @@
     {{$p4 := add .current 2}}
     <div class="layui-row paging">
         <div class="layui-box layui-laypage layui-laypage-default">
-            <a {{if eq .current 1}}class="layui-disabled"{{else}}href="/?page=1"{{end}}>首页</a>
-            <a {{if eq .current 1}}class="layui-disabled"{{else}}href="/?page={{$p2}}"{{end}}>上页</a>
+            <a {{if eq .current 1}}class="layui-disabled" {{else}}href="/?page=1"{{end}}>首页</a>
+            <a {{if eq .current 1}}class="layui-disabled" {{else}}href="/?page={{$p2}}"{{end}}>上页</a>
             {{if gt $p1 0}}
                 <a href="/?page={{$p1}}">{{$p1}}</a>
             {{end}}
@@ -75,8 +73,8 @@
             {{if le $p4 .total}}
                 <a href="/?page={{$p4}}">{{$p4}}</a>
             {{end}}
-            <a {{if eq .current .total}}class="layui-disabled"{{else}}href="/?page={{$p3}}"{{end}}>下页</a>
-            <a {{if eq .current .total}}class="layui-disabled"{{else}}href="/?page={{.total}}"{{end}}>尾页</a>
+            <a {{if eq .current .total}}class="layui-disabled" {{else}}href="/?page={{$p3}}"{{end}}>下页</a>
+            <a {{if eq .current .total}}class="layui-disabled" {{else}}href="/?page={{.total}}"{{end}}>尾页</a>
         </div>
     </div>
 </div>
