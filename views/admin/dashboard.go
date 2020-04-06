@@ -1,10 +1,12 @@
 package admin
 
 import (
+	"github.com/dujigui/blog/gateway"
 	. "github.com/dujigui/blog/services"
 	. "github.com/dujigui/blog/services/comments"
 	. "github.com/dujigui/blog/services/logs"
 	. "github.com/dujigui/blog/services/posts"
+	. "github.com/dujigui/blog/services/users"
 	. "github.com/dujigui/blog/utils"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
@@ -36,12 +38,39 @@ func (c *adminCtrl) Get() mvc.View {
 	return mvc.View{
 		Name: "admin/html/dashboard.html",
 		Data: iris.Map{
-			"tab":            dashboard,
-			"PostNumber":     pc,
-			"CommentNumber":  cc,
-			"DaysLastPost":   dp,
-			"DayOnline":      do,
+			"tab":           dashboard,
+			"PostNumber":    pc,
+			"CommentNumber": cc,
+			"DaysLastPost":  dp,
+			"DayOnline":     do,
 		},
 	}
 }
 
+func Info(ctx iris.Context) {
+	ok, uid, admin := gateway.Info(ctx)
+
+	if !ok || !admin || uid <= 0 {
+		ctx.StatusCode(iris.StatusUnauthorized)
+		ctx.JSON(Result(false, "StatusUnauthorized", nil))
+		return
+	}
+
+	u, err := UserTable().Retrieve(uid)
+	if err != nil || u.ID <= 0 {
+		ctx.StatusCode(iris.StatusInternalServerError)
+		ctx.JSON(Result(false, "StatusInternalServerError", nil))
+		return
+	}
+
+	type formUser struct {
+		ID       int `json:"id"`
+		Avatar   string `json:"avatar"`
+		Nickname string `json:"nickname"`
+	}
+	ctx.JSON(Result(true, "ok", formUser{
+		ID:       u.ID,
+		Avatar:   u.Avatar,
+		Nickname: u.Nickname,
+	}))
+}

@@ -21,6 +21,7 @@ func Admin(app *iris.Application) {
 
 	pa := app.Party("/admin").Layout("admin/admin.html")
 	mvc.New(pa).Handle(new(adminCtrl))
+	pa.Get("/info", Info)
 
 	pp := pa.Party("/posts")
 	mvc.New(pp).Handle(new(postsCtrl))

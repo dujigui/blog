@@ -38,7 +38,6 @@ func (c *loginCtrl) Get() mvc.View {
 	}
 }
 
-// todo 检查所有用户的输入，防止sql注入和xss攻击
 func Login(ctx iris.Context) {
 	type form struct {
 		Account  string `form:"account"`

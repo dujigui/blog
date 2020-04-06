@@ -67,3 +67,10 @@ body {
     height: 50px;
 }
 /* end file_editor */
+
+/* start comment*/
+xmp {
+    display: unset;
+    margin: 0 0;
+}
+/* end comment*/

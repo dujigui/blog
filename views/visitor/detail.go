@@ -1,6 +1,7 @@
 package visitor
 
 import (
+	"github.com/dujigui/blog/gateway"
 	. "github.com/dujigui/blog/services/comments"
 	. "github.com/dujigui/blog/services/posts"
 	. "github.com/dujigui/blog/services/tags"
@@ -9,6 +10,7 @@ import (
 	"github.com/iris-contrib/blackfriday"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
+	"html"
 	"html/template"
 )
 
@@ -50,10 +52,11 @@ func (c *detailCtrl) GetBy(id int) mvc.View {
 			Avatar:   u.Avatar,
 			Nickname: u.Nickname,
 		}
+		// 模板引擎会做一次转义
+		cs[k].Content = html.UnescapeString(v.Content)
 	}
 
-	ok := c.Ctx.Params().GetBoolDefault("ok", false)
-	uid := c.Ctx.Params().GetIntDefault("id", 0)
+	ok, uid, _ := gateway.Info(c.Ctx)
 	var user CommentUser
 	if ok && uid != 0 {
 		u, err := UserTable().Retrieve(uid)

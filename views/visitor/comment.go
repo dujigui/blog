@@ -2,9 +2,11 @@ package visitor
 
 import (
 	"fmt"
+	"github.com/dujigui/blog/gateway"
 	. "github.com/dujigui/blog/services/comments"
 	. "github.com/dujigui/blog/utils"
 	"github.com/kataras/iris/v12"
+	"html"
 	"strconv"
 )
 
@@ -14,9 +16,7 @@ type formComment struct {
 }
 
 func postComment(ctx iris.Context) {
-	ok := ctx.Params().GetBoolDefault("ok", false)
-	uid := ctx.Params().GetIntDefault("id", 0)
-	admin := ctx.Params().GetBoolDefault("admin", false)
+	ok, uid, admin := gateway.Info(ctx)
 	if !ok || uid == 0 {
 		ctx.StatusCode(iris.StatusUnauthorized)
 		ctx.JSON(Result(false, "请重新登录", nil))
@@ -44,7 +44,7 @@ func postComment(ctx iris.Context) {
 		return
 	}
 
-	cid, err := CommentTable().Create(Params{"content": fc.Content, "post_id": fc.PostID, "user_id": uid, "inspect": admin})
+	cid, err := CommentTable().Create(Params{"content": html.EscapeString(fc.Content), "post_id": fc.PostID, "user_id": uid, "inspect": admin})
 	if err != nil || cid <= 0 {
 		ctx.StatusCode(iris.StatusInternalServerError)
 		ctx.JSON(Result(false, "创建评论失败", nil))

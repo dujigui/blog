@@ -48,6 +48,28 @@ layui.use(['element', 'layer'], function () {
     }
     document.title = apn + '-' + tn;
     document.body.appendChild(s);
+
+    $('#btnLogout').click(function () {
+        $.ajax({
+            type: "DELETE",
+            contentType: "application/json",
+            url: "/logout",
+            context: document.body,
+            success: function (result) {
+                toast("已退出登录");
+                setTimeout(function () {
+                    window.location.href = "/login"
+                }, 1000);
+            },
+            error: function (result) {
+                console.log(result);
+            }
+        });
+    });
+    $.get("/admin/info", function (result) {
+        $('#avatar').attr('src', result.result.avatar);
+        $('#nickname').text(result.result.nickname);
+    })
 });
 
 function formatCreated(d) {

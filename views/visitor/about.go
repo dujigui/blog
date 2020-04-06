@@ -2,7 +2,7 @@ package visitor
 
 import (
 	"fmt"
-	"github.com/dujigui/blog/services"
+	. "github.com/dujigui/blog/services"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/mvc"
 )
@@ -12,7 +12,7 @@ type aboutCtrl struct {
 }
 
 func (c *aboutCtrl) Get() interface{} {
-	apid := services.Pref().AboutPostID
+	apid := Pref().AboutPostID
 	if apid == 0 {
 		return mvc.Response{Path: "/"}
 	}

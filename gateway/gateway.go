@@ -4,6 +4,7 @@ import (
 	"fmt"
 	. "github.com/dujigui/blog/services"
 	. "github.com/dujigui/blog/services/users"
+	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 	"net/url"
 	"strconv"
@@ -30,10 +31,10 @@ func Gateway(ctx context.Context) {
 
 	ok, id, admin := ParseToken(ctx.GetCookie("token"))
 	if ok {
-		ctx.Params().Set("id", strconv.Itoa(id))
-		ctx.Params().Set("admin", strconv.FormatBool(admin))
+		ctx.Params().Set("__id", strconv.Itoa(id))
+		ctx.Params().Set("__admin", strconv.FormatBool(admin))
 	}
-	ctx.Params().Set("ok", strconv.FormatBool(ok))
+	ctx.Params().Set("__ok", strconv.FormatBool(ok))
 
 	if strings.HasPrefix(ctx.Path(), "/admin") {
 		if !ok || !admin {
@@ -49,4 +50,11 @@ func Gateway(ctx context.Context) {
 		}
 	}
 	ctx.Next()
+}
+
+func Info(ctx iris.Context) (ok bool, uid int, admin bool) {
+	ok = ctx.Params().GetBoolDefault("__ok", false)
+	uid = ctx.Params().GetIntDefault("__id", 0)
+	admin = ctx.Params().GetBoolDefault("__admin", false)
+	return
 }
