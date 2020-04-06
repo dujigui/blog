@@ -14,7 +14,7 @@ layui.use(['table', 'layer'], function () {
             {field: 'Content', title: 'Content'},
             {field: 'Created', title: 'Created', sort: true, width: 160, templet: formatCreated},
             {field: 'Updated', title: 'Updated', sort: true, width: 160, templet: formatUpdated},
-            {field: 'IsPublished', title: 'IsPublished', width: 80, sort: true},
+            {field: 'Publish', title: 'Publish', width: 80, sort: true},
             {field: 'Type', title: 'Type', width: 100, sort: true, templet: formatType},
             {field: 'Tags', title: 'Tags', width: 150, templet: addTags},
             {fixed: 'right', align: 'left', width: 170, toolbar: '#actions'}

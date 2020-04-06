@@ -78,7 +78,7 @@ func (c *postsCtrl) Post() interface{} {
 		return ErrMsg(fmt.Sprintf("内部错误 %s", err))
 	}
 
-	if fp.IsPublished {
+	if fp.Publish {
 		return mvc.Response{Path: fmt.Sprintf("/posts/%d", id)}
 	}
 	return mvc.Response{Path: "/admin/posts"}
@@ -102,7 +102,7 @@ func (c *postsCtrl) PostBy(id int) interface{} {
 		return ErrMsg(fmt.Sprintf("内部错误 %s", err))
 	}
 
-	if fp.IsPublished {
+	if fp.Publish {
 		return mvc.Response{Path: fmt.Sprintf("/posts/%d", id)}
 	}
 	return mvc.Response{Path: "/admin/posts"}
@@ -135,7 +135,7 @@ func params(fp *formPost) (Params, string) {
 	}
 
 	p["cover"] = fp.Cover
-	p["is_published"] = fp.IsPublished
+	p["publish"] = fp.Publish
 	p["tag_ids"] = fp.TagIDs
 
 	s := strings.ReplaceAll(fp.Content, "\r", "")
@@ -148,7 +148,7 @@ func listPost(ctx iris.Context) {
 	page := ctx.URLParamIntDefault("page", 1)
 	limit := ctx.URLParamIntDefault("limit", 10)
 
-	posts, total, err := PostTable().Page(page, limit)
+	posts, total, err := PostTable().Page(page, limit, true)
 	if err != nil {
 		Logger().Error("postsCtrl", "无法获取文章列表", Params{"total": total, "err": err})
 		posts = make([]Post, 0)

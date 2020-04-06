@@ -14,16 +14,16 @@ import (
 const (
 	tableStmt = `create table if not exists %s
 (
-    id           int primary key auto_increment not null,
-    title        varchar(255),
-    description  varchar(255),
-    cover        varchar(255),
-    created      datetime                       not null default current_timestamp,
-    updated      datetime                       not null default current_timestamp on update current_timestamp,
-    is_published boolean                        not null,
-    type         int                            not null,
-    content      blob                           not null,
-    tag_ids      varchar(255)                            default '' not null
+    id          int primary key auto_increment not null,
+    title       varchar(255),
+    description varchar(255),
+    cover       varchar(255),
+    publish     boolean                        not null default false comment '是否发布',
+    type        int                            not null,
+    content     blob                           not null,
+    tag_ids     varchar(255)                   not null default '',
+    created     datetime                       not null default current_timestamp,
+    updated     datetime                       not null default current_timestamp on update current_timestamp
 );`
 	tableName = "posts"
 	Article   = 1
@@ -46,7 +46,7 @@ type Posts interface {
 	Retrieve(id int) (Post, error)
 	Update(id int, params Params) error
 	Delete(id int) error
-	Page(page, limit int) ([]Post, int, error)
+	Page(page, limit int, all bool) ([]Post, int, error)
 	Count() (int, error)
 	Latest() (Post, error)
 	All() ([]Post, error)
@@ -59,12 +59,12 @@ type Post struct {
 	Description string
 	Cover       string
 	Content     []byte
-	Created     time.Time
-	Updated     time.Time
-	IsPublished bool
+	Publish     bool
 	Type        int
 	TagIDs      string // 1,2,3
 	Tags        []Tag
+	Created     time.Time
+	Updated     time.Time
 }
 
 type mysql struct {
@@ -77,7 +77,7 @@ func (m *mysql) Create(params Params) (int, error) {
 func (m *mysql) Retrieve(id int) (Post, error) {
 	var p Post
 	err := Retrieve(tableName, id, func(rows *sql.Rows) error {
-		return rows.Scan(&p.ID, &p.Title, &p.Description, &p.Cover, &p.Created, &p.Updated, &p.IsPublished, &p.Type, &p.Content, &p.TagIDs)
+		return scan(&p, rows)
 	})
 	return p, err
 }
@@ -90,7 +90,7 @@ func (m *mysql) Delete(id int) error {
 	return Delete(tableName, id)
 }
 
-func (m *mysql) Page(page, limit int) ([]Post, int, error) {
+func (m *mysql) Page(page, limit int, all bool) ([]Post, int, error) {
 	if page <= 0 {
 		page = 1
 	}
@@ -103,8 +103,15 @@ func (m *mysql) Page(page, limit int) ([]Post, int, error) {
 
 	var posts = make([]Post, 0)
 	var p Post
-	t, err := Page(tableName, "order by created desc", func(rows *sql.Rows) error {
-		err := rows.Scan(&p.ID, &p.Title, &p.Description, &p.Cover, &p.Created, &p.Updated, &p.IsPublished, &p.Type, &p.Content, &p.TagIDs)
+
+	var where string
+	if all {
+		where = "order by created desc"
+	} else {
+		where = "where publish=true order by created desc"
+	}
+	t, err := Page(tableName, where, func(rows *sql.Rows) error {
+		err := scan(&p, rows)
 		if err == nil {
 			posts = append(posts, p)
 		}
@@ -119,7 +126,7 @@ func (m *mysql) Count() (int, error) {
 
 func (m *mysql) Latest() (p Post, err error) {
 	err = Condition(tableName, "order by updated desc", func(rows *sql.Rows) error {
-		return rows.Scan(&p.ID, &p.Title, &p.Description, &p.Cover, &p.Created, &p.Updated, &p.IsPublished, &p.Type, &p.Content, &p.TagIDs)
+		return scan(&p, rows)
 	})
 	return
 }
@@ -128,11 +135,15 @@ func (m *mysql) All() ([]Post, error) {
 	var posts = make([]Post, 0)
 	var p Post
 	err := Condition(tableName, "", func(rows *sql.Rows) error {
-		err := rows.Scan(&p.ID, &p.Title, &p.Description, &p.Cover, &p.Created, &p.Updated, &p.IsPublished, &p.Type, &p.Content, &p.TagIDs)
+		err := scan(&p, rows)
 		if err == nil {
 			posts = append(posts, p)
 		}
 		return err
 	})
 	return posts, err
+}
+
+func scan(p *Post, rows *sql.Rows) error {
+	return rows.Scan(&p.ID, &p.Title, &p.Description, &p.Cover, &p.Publish, &p.Type, &p.Content, &p.TagIDs, &p.Created, &p.Updated)
 }

@@ -1,5 +1,6 @@
-<div class="layui-row">
+<link rel="stylesheet" href="/backyard/css/post_editor.css">
 
+<div class="layui-row">
     <div class="layui-col-md6 layui-col-sm12">
         <div class="content-box">
             <form id="postForm" class="layui-form layui-form-pane" action="/admin/posts" method="post" lay-filter="postForm">
@@ -57,8 +58,8 @@
                 <div class="layui-form-item" pane>
                     <label class="layui-form-label">状态</label>
                     <div class="layui-input-block">
-                        <input type="radio" name="IsPublished" value="0" title="存草稿">
-                        <input type="radio" name="IsPublished" value="1" title="发表" checked>
+                        <input type="radio" name="Publish" value="0" title="存草稿">
+                        <input type="radio" name="Publish" value="1" title="发表" checked>
                     </div>
                 </div>
                 <!-- /.状态 -->
@@ -82,7 +83,7 @@
 
 
     <div class="layui-col-md6 layui-col-sm12">
-        <div id="ContentPreview" class="content-box">
+        <div id="ContentPreview" class="content-box content markdown">
         </div>
     </div>
 

@@ -41,6 +41,11 @@ func ReqLogger() context.Handler {
 }
 
 func logReq(latency time.Duration, status, ip, method, path string) {
+	if latency < time.Millisecond {
+		latency = latency.Round(time.Microsecond)
+	} else {
+		latency = latency.Round(time.Millisecond)
+	}
 	p := Params{
 		"reqLatency": latency,
 		"reqStatus":  status,

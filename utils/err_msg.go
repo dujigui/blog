@@ -7,7 +7,7 @@ import (
 
 func ErrMsg(msg string) mvc.View {
 	return mvc.View{
-		Name:   "tpl/error.html",
+		Name:   "visitor/html/error.html",
 		Layout: iris.NoLayout,
 		Data: iris.Map{
 			"ErrorMessage": msg,

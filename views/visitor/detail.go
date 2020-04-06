@@ -21,7 +21,7 @@ type detailCtrl struct {
 func (c *detailCtrl) GetBy(id int) mvc.View {
 	p, err := PostTable().Retrieve(id)
 
-	if err != nil {
+	if err != nil || !p.Publish{
 		return ErrMsg("无此 ID 文章")
 	}
 

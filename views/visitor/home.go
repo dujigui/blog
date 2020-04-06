@@ -17,7 +17,7 @@ func (c *homeCtrl) Get() mvc.View {
 	page := c.Ctx.URLParamIntDefault("page", 1)
 	limit := c.Ctx.URLParamIntDefault("limit", 10)
 
-	posts, total, err := PostTable().Page(page, limit)
+	posts, total, err := PostTable().Page(page, limit, false)
 	if err != nil {
 		Logger().Error("postsCtrl", "无法获取文章列表", Params{"total": total, "err": err})
 		posts = make([]Post, 0)

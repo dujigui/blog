@@ -36,7 +36,7 @@ func (f *CliFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	var msg string
 	if len(reqLog) != 0 {
 		msg = fmt.Sprintf("%s %s %s %s %s",
-			reqLog["reqIP"],reqLog["reqMethod"],reqLog["reqPath"], reqLog["reqStatus"], reqLog["reqLatency"])
+			reqLog["reqIP"], reqLog["reqMethod"], reqLog["reqStatus"], reqLog["reqPath"], reqLog["reqLatency"])
 	} else {
 		msg = entry.Message
 	}
@@ -45,8 +45,8 @@ func (f *CliFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	r := fmt.Sprintf("[%03d][%s][%s][%s] %s %s %s\n",
 		i,
 		strings.ToUpper(entry.Level.String()),
-		entry.Data["tag"],
 		entry.Time.Format("2006.01.02 15:04:05"),
+		entry.Data["tag"],
 		msg,
 		strings.Join(b1, " "),
 		strings.Join(b2, " "),

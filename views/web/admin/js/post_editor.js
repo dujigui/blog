@@ -137,7 +137,7 @@ function render() {
                 "Description": post.Description,
                 "Cover": post.Cover,
                 "Content": post.Content,
-                "IsPublished": post.IsPublished ? '1' : '0',
+                "Publish": post.Publish ? '1' : '0',
             });
 
             changeType(post.Type);
@@ -169,4 +169,3 @@ function render() {
         convertMD();
     })
 }
-

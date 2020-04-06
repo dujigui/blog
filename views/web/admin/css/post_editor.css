@@ -1,0 +1,64 @@
+.content h1 {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.markdown {
+
+}
+
+.markdown h2 {
+    text-align: center;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    margin-bottom: 30px;
+}
+
+.markdown h3 {
+    font-size: 1.25em;
+    margin-bottom: 30px;
+}
+
+.markdown p img {
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.markdown p {
+    margin-bottom: 30px;
+    line-height: 1.7em;
+    font-size: 1em;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "PingFang SC", "Hiragino Sans GB", "Droid Sans Fallback", "Microsoft YaHei", sans-serif;
+    color: #444443;
+}
+
+.markdown > blockquote {
+    border-left: 5px solid #455A64;
+    background: #F5f5f5;
+    font-style: italic;
+    padding: 10px 20px;
+    margin: 0 0 20px;
+}
+
+.markdown pre {
+    margin-bottom: 30px;
+    border: 1px solid #ddd;
+}
+
+.markdown ol {
+    margin-bottom: 30px;
+}
+
+.markdown ul {
+    margin-bottom: 30px;
+}
+
+.markdown ol li {
+    list-style: decimal inside;
+}
+
+.markdown ul li {
+    list-style: disc inside;
+}
