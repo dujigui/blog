@@ -6,10 +6,35 @@ import (
 	. "github.com/dujigui/blog/services/users"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
+	"math/rand"
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 )
+
+var (
+	letters  = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	prefix   = randSeq(10) + "_"
+	keyOk    = prefix + "ok"
+	keyID    = prefix + "id"
+	keyAdmin = prefix + "admin"
+)
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+func randSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	rand.Shuffle(len(b), func(i, j int) {
+		b[i], b[j] = b[j], b[i]
+	})
+	return string(b)
+}
 
 func Gateway(ctx context.Context) {
 	if strings.HasPrefix(ctx.Path(), "/files") ||
@@ -30,11 +55,11 @@ func Gateway(ctx context.Context) {
 	}
 
 	ok, id, admin := ParseToken(ctx.GetCookie("token"))
+	ctx.Params().Set(keyOk, strconv.FormatBool(ok))
 	if ok {
-		ctx.Params().Set("__id", strconv.Itoa(id))
-		ctx.Params().Set("__admin", strconv.FormatBool(admin))
+		ctx.Params().Set(keyID, strconv.Itoa(id))
+		ctx.Params().Set(keyAdmin, strconv.FormatBool(admin))
 	}
-	ctx.Params().Set("__ok", strconv.FormatBool(ok))
 
 	if strings.HasPrefix(ctx.Path(), "/admin") {
 		if !ok || !admin {
@@ -53,8 +78,8 @@ func Gateway(ctx context.Context) {
 }
 
 func Info(ctx iris.Context) (ok bool, uid int, admin bool) {
-	ok = ctx.Params().GetBoolDefault("__ok", false)
-	uid = ctx.Params().GetIntDefault("__id", 0)
-	admin = ctx.Params().GetBoolDefault("__admin", false)
+	ok = ctx.Params().GetBoolDefault(keyOk, false)
+	uid = ctx.Params().GetIntDefault(keyID, 0)
+	admin = ctx.Params().GetBoolDefault(keyAdmin, false)
 	return
 }
