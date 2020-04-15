@@ -3,25 +3,24 @@ package files
 import (
 	"crypto/md5"
 	"encoding/hex"
-	. "github.com/dujigui/blog/services/cfg"
-	. "github.com/dujigui/blog/services/logs"
 	. "github.com/dujigui/blog/utils"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
 func init() {
-	dir := Config().GetString("files")
+	dir := "data/files/"
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
-		Logger().Fatal("upload", "创建文件目录失败", Params{"dir": dir, "err": err})
+		log.Fatal("upload ", "创建文件目录失败 ", Params{"dir": dir}.Err(err))
 	}
 }
 
 func Save(in io.Reader, original string) (string, error) {
 	hashed := hash(original)
-	dir := Config().GetString("files")
+	dir := "data/files/"
 	out, err := os.OpenFile(filepath.Join(dir, hashed), os.O_WRONLY|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		return hashed, err
@@ -32,7 +31,7 @@ func Save(in io.Reader, original string) (string, error) {
 }
 
 func Remove(fn string) error {
-	dir := Config().GetString("files")
+	dir := "data/files/"
 	fp := filepath.Join(dir, fn)
 	return os.Remove(fp)
 }

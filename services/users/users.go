@@ -7,6 +7,7 @@ import (
 	. "github.com/dujigui/blog/services/logs"
 	. "github.com/dujigui/blog/utils"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"time"
 )
 
@@ -33,7 +34,7 @@ const (
 
 func init() {
 	if _, err := DB().Exec(fmt.Sprintf(tableStmt, tableName)); err != nil {
-		Logger().Fatal("mysql", "初始化 Table 失败", Params{"table": tableName, "err": err})
+		log.Fatal("mysql ", "初始化 Table 失败 ", Params{"table": tableName}.Err(err))
 	}
 }
 

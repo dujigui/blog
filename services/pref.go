@@ -2,9 +2,9 @@ package services
 
 import (
 	"encoding/json"
-	. "github.com/dujigui/blog/services/cfg"
 	. "github.com/dujigui/blog/services/logs"
 	. "github.com/dujigui/blog/utils"
+	"log"
 	"os"
 	"path/filepath"
 )
@@ -28,9 +28,14 @@ type Preferences struct {
 }
 
 func init() {
-	dir := Config().GetString("pref")
+	dir := "data/favicon/"
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
-		Logger().Fatal("pref", "创建配置目录失败", Params{"dir": dir})
+		log.Fatal("pref ", "创建 favicon 目录失败 ", Params{"dir": dir}.Err(err))
+	}
+
+	dir = "data/pref/"
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		log.Fatal("pref ", "创建配置目录失败 ", Params{"dir": dir}.Err(err))
 	}
 
 	f, err := os.Open(filepath.Join(dir, prefName))
@@ -48,7 +53,7 @@ func init() {
 
 // todo 初始化时保存配置
 func (p *Preferences) Save() error {
-	dir := Config().GetString("pref")
+	dir := "data/pref/"
 	f, err := os.OpenFile(filepath.Join(dir, prefName), os.O_CREATE|os.O_WRONLY, os.ModePerm)
 	if err != nil {
 		Logger().Fatal("pref", "配置文件无法打开", Params{"dir": dir, "preName": prefName, "err": err})

@@ -61,4 +61,10 @@ create database blog character set utf8mb4 collate utf8mb4_unicode_ci;
 exit;
 ```
 
-2. redis
+2. 启动
+
+首先准备好mysql，按照[go-sql-driver 文档说明](https://github.com/go-sql-driver/mysql#dsn-data-source-name) 将 dsn 设置为环境变量，例如 BLOG_DSN="blog:Aa123456@/blog?charset=utf8mb4&parseTime=True&loc=Local"
+
+有两种运行方式，第一种使用打包好的 docker 镜像运行
+
+第二种是直接编译运行，开发或者测试时需要添加环境变量 BLOG_DEBUG=true

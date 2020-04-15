@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
 	. "github.com/dujigui/blog/gateway"
-	. "github.com/dujigui/blog/services/cfg"
 	. "github.com/dujigui/blog/services/logs"
 	. "github.com/dujigui/blog/views"
 	"github.com/kataras/iris/v12"
@@ -17,9 +15,7 @@ func main() {
 	app.Use(ReqLogger())
 	app.Use(Gateway)
 	Views(app)
-	host := Config().GetString("host")
-	port := Config().GetString("port")
-	_ = app.Run(iris.Addr(fmt.Sprintf("%s:%s", host, port)), iris.WithoutServerError(iris.ErrServerClosed))
+	_ = app.Run(iris.Addr(":8080"), iris.WithoutServerError(iris.ErrServerClosed))
 }
 
 /*func renameFile() {

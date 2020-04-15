@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	. "github.com/dujigui/blog/services/db"
-	. "github.com/dujigui/blog/services/logs"
 	. "github.com/dujigui/blog/utils"
+	"log"
 	"time"
 )
 
@@ -26,7 +26,7 @@ const (
 
 func init() {
 	if _, err := DB().Exec(fmt.Sprintf(tableStmt, tableName)); err != nil {
-		Logger().Fatal("mysql", "初始化 Table 失败", Params{"table": tableName, "err": err})
+		log.Fatal("mysql ", "初始化 Table 失败 ", Params{"table": tableName}.Err(err))
 	}
 }
 

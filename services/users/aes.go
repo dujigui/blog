@@ -18,7 +18,7 @@ func init() {
 	var err error
 	block, err = aes.NewCipher([]byte(aesKey + Pref().Salt)[:16])
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("aes ", "初始化加密失败 ", err)
 	}
 }
 

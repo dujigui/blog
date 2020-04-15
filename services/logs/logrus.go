@@ -2,12 +2,12 @@ package logs
 
 import (
 	"fmt"
-	. "github.com/dujigui/blog/services/cfg"
 	. "github.com/dujigui/blog/utils"
 	"github.com/sirupsen/logrus"
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -17,38 +17,29 @@ type logger struct {
 }
 
 func init() {
-	if Config().GetBool("production") {
-		updateOutput()
-		logrus.SetFormatter(&logrus.JSONFormatter{})
-		logrus.SetLevel(logrus.TraceLevel)
-	} else {
+	isDebug := strings.EqualFold(os.Getenv("BLOG_DEBUG"), "true")
+	if isDebug {
 		logrus.SetFormatter(&CliFormatter{})
 		logrus.SetOutput(os.Stdout)
 		logrus.SetLevel(logrus.TraceLevel)
+		logrus.Trace("使用 BLOG_DEBUG 模式运行")
+	} else {
+		updateFile()
+		logrus.SetFormatter(&logrus.JSONFormatter{})
+		logrus.SetLevel(logrus.TraceLevel)
 	}
 }
 
-func updateOutput() {
-	rotate := Config().GetString("logs.rotate")
-	switch rotate {
-	case "hour":
-		updateFile(time.Hour)
-	case "day":
-		updateFile(time.Hour * 24)
-	default:
-		log.Fatalf("参数错误 logs.rotate=%s", rotate)
-	}
-}
-
-func updateFile(d time.Duration) {
-	dir := Config().GetString("logs.dir")
+func updateFile() {
+	d := 24 * time.Hour
+	dir := "data/logs/"
 	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
 		log.Fatalf("创建日志目录失败 dir=%s", dir)
 	}
 
 	now := time.Now()
 	now = time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, now.Location())
-	fp := fileName(now, d == time.Hour*24)
+	fp := fileName(now)
 	f := setFile(dir, fp)
 
 	go func() {
@@ -57,7 +48,7 @@ func updateFile(d time.Duration) {
 			t := time.NewTimer(next.Sub(now))
 			<-t.C
 			t.Stop()
-			fp = fileName(now, d != time.Hour)
+			fp = fileName(now)
 			tf := setFile(dir, fp)
 			if err := f.Close(); err != nil {
 				log.Printf("关闭日志文件失败 err=%s old=%s\n", err, fp)
@@ -68,12 +59,8 @@ func updateFile(d time.Duration) {
 	}()
 }
 
-func fileName(t time.Time, daily bool) string {
-	if daily {
-		return fmt.Sprintf("%d-%d-%d.log", t.Year(), t.Month(), t.Day())
-	} else {
-		return fmt.Sprintf("%d-%d-%d-%d.log", t.Year(), t.Month(), t.Day(), t.Hour())
-	}
+func fileName(t time.Time) string {
+	return fmt.Sprintf("%d-%d-%d.log", t.Year(), t.Month(), t.Day())
 }
 
 func setFile(dir, fp string) *os.File {

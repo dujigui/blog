@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	. "github.com/dujigui/blog/services/db"
-	. "github.com/dujigui/blog/services/logs"
 	. "github.com/dujigui/blog/utils"
+	"log"
 )
 
 //noinspection SqlNoDataSourceInspection
@@ -35,7 +35,7 @@ const (
 
 func init() {
 	if _, err := DB().Exec(fmt.Sprintf(tableQQStmt, tableQQName)); err != nil {
-		Logger().Fatal("mysql", "初始化 Table 失败", Params{"table": tableQQName, "err": err})
+		log.Fatal("mysql ", "初始化 Table 失败 ", Params{"table": tableQQName}.Err(err))
 	}
 }
 
