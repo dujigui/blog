@@ -8,6 +8,7 @@ import (
 	"github.com/kataras/iris/v12/middleware/recover"
 )
 
+// todo 添加测试用例 添加log
 func main() {
 	app := iris.New()
 	app.Logger().SetLevel("debug")

@@ -118,6 +118,8 @@ steps:
         from_secret: registry_username
       REGISTRY_PASSWORD:
         from_secret: registry_password
+      BLOG_DSN_DEV:
+        from_secret: blog_dsn_dev
     settings:
       script_stop: true
       host:
@@ -128,14 +130,17 @@ steps:
       envs:
         - registry_username
         - registry_password
+        - blog_dsn_dev
       script:
         - export REGISTRY_URL=registry.nullsfootprints.com
         - export REGISTRY_REPO=$REGISTRY_URL/blog_dev
         - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD $REGISTRY_URL
         - docker pull $REGISTRY_REPO:latest
         - docker rm -f blog_dev || true
-        - docker run --name blog_dev --network blog -d $REGISTRY_REPO:latest
-        - docker rmi $(docker images --filter reference=$REGISTRY_REPO --filter before=$REGISTRY_REPO:latest -q)
+        - docker run -v /home/ubuntu/blog/dev/:/app/data/ -e BLOG_DSN=$BLOG_DSN_DEV --name blog_dev -d $REGISTRY_REPO:latest
+        - docker network connect dev blog_dev
+        - docker network connect nginx blog_dev
+        - docker rmi $(docker images --filter reference=$REGISTRY_REPO --filter before=$REGISTRY_REPO:latest -q) || true
     depends_on:
       - registry
 
