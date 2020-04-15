@@ -137,8 +137,7 @@ steps:
         - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD $REGISTRY_URL
         - docker pull $REGISTRY_REPO:latest
         - docker rm -f blog_dev || true
-        - docker run -v /home/ubuntu/blog/dev/:/app/data/ -e BLOG_DSN=$BLOG_DSN_DEV --name blog_dev -d $REGISTRY_REPO:latest
-        - docker network connect dev blog_dev
+        - docker run -v /home/ubuntu/blog/dev/:/app/data/ -e BLOG_DSN=$BLOG_DSN_DEV --network dev --name blog_dev -d $REGISTRY_REPO:latest
         - docker network connect nginx blog_dev
         - docker rmi $(docker images --filter reference=$REGISTRY_REPO --filter before=$REGISTRY_REPO:latest -q) || true
     depends_on:
