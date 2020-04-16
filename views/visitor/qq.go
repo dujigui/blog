@@ -95,8 +95,8 @@ func qq(ctx iris.Context) {
 		"figureurl_qq_2": ui.FigureurlQq2,
 		"figureurl_qq":   ui.FigureurlQq,
 		"figureurl_type": ui.FigureurlType,
-		"OpenID":         ui.OpenID,
-		"AccessToken":    ui.AccessToken,
+		"open_id":        ui.OpenID,
+		"access_token":   ui.AccessToken,
 	}
 	if qi.ID == 0 {
 		id, err := QQTable().Create(p)
