@@ -106,7 +106,7 @@ func qq(ctx iris.Context) {
 			ctx.JSON(Result(false, "无法创建 QQ 用户", nil))
 			return
 		}
-		id1, err1 := UserTable().Create(Params{"type": ViaQQ, "qq_id": id})
+		id1, err1 := UserTable().Create(Params{"type": ViaQQ, "qq_id": id, "avatar": ui.FigureurlQq, "nickname": ui.Nickname})
 		if err1 != nil || id1 == 0 {
 			Logger().Error("qq", "无法关联 QQ 用户", p.Err(err))
 			ctx.StatusCode(iris.StatusInternalServerError)

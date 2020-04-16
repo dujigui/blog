@@ -66,7 +66,11 @@ func ComparePassword(account, password string) (User, bool) {
 		return u, false
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	if !u.Password.Valid {
+		return u, false
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(u.Password.String), []byte(password))
 	if err != nil {
 		Logger().Trace("users", "密码不正确", Params{"account": account, "password": password}.Err(err))
 		return u, false
@@ -77,8 +81,8 @@ func ComparePassword(account, password string) (User, bool) {
 
 type User struct {
 	ID       int
-	Username string
-	Password string
+	Username sql.NullString
+	Password sql.NullString
 	Admin    bool
 	Type     int
 	QQID     int
@@ -112,16 +116,16 @@ func (u *mysql) Delete(id int) error {
 }
 
 func (u *mysql) ByUsername(username string) (user User, err error) {
-	err = Condition(tableName, "where username=?", func(rows *sql.Rows) error {
+	err = Condition(tableName, "where username=? and type=?", func(rows *sql.Rows) error {
 		return scan(&user, rows)
-	}, username)
+	}, username, ViaAccount)
 	return
 }
 
 func (u *mysql) ByQQID(id int) (user User, err error) {
-	err = Condition(tableName, "where qq_id=?", func(rows *sql.Rows) error {
+	err = Condition(tableName, "where qq_id=? and type=?", func(rows *sql.Rows) error {
 		return scan(&user, rows)
-	}, id)
+	}, id, ViaQQ)
 	return
 }
 
