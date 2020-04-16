@@ -53,6 +53,7 @@ func Info(ctx iris.Context) {
 	if !ok || !admin || uid <= 0 {
 		ctx.StatusCode(iris.StatusUnauthorized)
 		ctx.JSON(Result(false, "StatusUnauthorized", nil))
+		Logger().Warning("adminCtrl", "未授权访问用户信息", nil)
 		return
 	}
 
@@ -60,11 +61,12 @@ func Info(ctx iris.Context) {
 	if err != nil || u.ID <= 0 {
 		ctx.StatusCode(iris.StatusInternalServerError)
 		ctx.JSON(Result(false, "StatusInternalServerError", nil))
+		Logger().Warning("adminCtrl", "无此用户信息", Params{"id": uid})
 		return
 	}
 
 	type formUser struct {
-		ID       int `json:"id"`
+		ID       int    `json:"id"`
 		Avatar   string `json:"avatar"`
 		Nickname string `json:"nickname"`
 	}

@@ -30,17 +30,3 @@ layui.use(['element', 'layer'], function () {
     }
     document.body.appendChild(eScript);
 });
-
-//todo 更好地整合腾讯统计
-var s = document.createElement("script");
-s.type = "text/javascript";
-s.charset = "UTF-8";
-
-var host = window.location.hostname;
-if (host.includes("dujigui")) {
-    s.src = "http://tajs.qq.com/stats?sId=66502163";
-} else if (host.includes("nullsfootprints")) {
-    s.src = "http://tajs.qq.com/stats?sId=66502158";
-}
-
-document.getElementById("tencent_analysis").append(s);

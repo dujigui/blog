@@ -45,6 +45,8 @@ func patchPref(ctx iris.Context) {
 	pp.QQAppID = p.QQAppID
 	pp.QQAppKey = p.QQAppKey
 	pp.QQRedirect = p.QQRedirect
+	pp.TAID = p.TAID
+	pp.BeiAn = p.BeiAn
 
 	if err := pp.Save(); err != nil {
 		ctx.StatusCode(iris.StatusInternalServerError)

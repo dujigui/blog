@@ -1,9 +1,9 @@
-layui.use('form', function(){
+layui.use('form', function () {
     var form = layui.form;
     var layer = layui.layer;
     var $ = layui.jquery;
 
-    form.on('submit(formDemo)', function(data){
+    form.on('submit(formDemo)', function (data) {
         if (data.field.salt === '') {
             layer.msg('加密盐不能为空');
             return false
@@ -44,7 +44,7 @@ layui.use('form', function(){
                 console.log("result: " + result);
                 layer.msg('初始化成功');
                 setTimeout(function () {
-                    window.open("/admin")
+                    window.location.href = "/admin";
                 }, 1000);
             },
             error: function (result) {

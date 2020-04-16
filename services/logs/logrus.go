@@ -22,7 +22,6 @@ func init() {
 		logrus.SetFormatter(&CliFormatter{})
 		logrus.SetOutput(os.Stdout)
 		logrus.SetLevel(logrus.TraceLevel)
-		logrus.Trace("使用 BLOG_DEBUG 模式运行")
 	} else {
 		updateFile()
 		logrus.SetFormatter(&logrus.JSONFormatter{})

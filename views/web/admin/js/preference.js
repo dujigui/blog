@@ -15,7 +15,9 @@ layui.use('form', function () {
                 "email": result.email,
                 "qq_app_id": result.qq_app_id,
                 "qq_app_key": result.qq_app_key,
-                "qq_redirect": result.qq_redirect
+                "qq_redirect": result.qq_redirect,
+                "ta_id": result.ta_id,
+                "beian": result.beian,
             });
             form.render();
         },
@@ -39,7 +41,9 @@ layui.use('form', function () {
                 "email": data.email,
                 "qq_app_id": data.qq_app_id,
                 "qq_app_key": data.qq_app_key,
-                "qq_redirect": data.qq_redirect
+                "qq_redirect": data.qq_redirect,
+                "ta_id": data.ta_id,
+                "beian": data.beian,
             }),
             success: function (result) {
                 console.log(result);

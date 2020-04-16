@@ -25,6 +25,11 @@ type Preferences struct {
 	QQAppKey      string `json:"qq_app_key"`
 	QQRedirect    string `json:"qq_redirect"`
 	Salt          string `json:"salt"`
+	// 在 https://ta.qq.com/ 申请后获得
+	// <script type="text/javascript" src="http://tajs.qq.com/stats?sId=60256158" charset="UTF-8"></script>
+	// 其中 60256158 就是 TAID
+	TAID  string `json:"ta_id"`
+	BeiAn string `json:"beian"`
 }
 
 func init() {
@@ -51,7 +56,6 @@ func init() {
 	}
 }
 
-// todo 初始化时保存配置
 func (p *Preferences) Save() error {
 	dir := "data/pref/"
 	f, err := os.OpenFile(filepath.Join(dir, prefName), os.O_CREATE|os.O_WRONLY, os.ModePerm)

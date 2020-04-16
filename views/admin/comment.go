@@ -28,6 +28,7 @@ func patchCmt(ctx iris.Context) {
 	if id == -1 {
 		ctx.StatusCode(iris.StatusBadRequest)
 		ctx.JSON(Result(false, "无法读取id", nil))
+		Logger().Warning("cmtCtrl", "无法读取id", nil)
 		return
 	}
 
@@ -36,6 +37,7 @@ func patchCmt(ctx iris.Context) {
 	if err := ctx.ReadJSON(c); err != nil {
 		ctx.StatusCode(iris.StatusBadRequest)
 		ctx.JSON(Result(false, "无法读取body", nil))
+		Logger().Warning("cmtCtrl", "无法读取body", nil)
 		return
 	}
 
@@ -86,6 +88,7 @@ func delCmt(ctx iris.Context) {
 		Logger().Error("cmtCtrl", "删除评论失败", Params{"id": id}.Err(err))
 		ctx.StatusCode(iris.StatusInternalServerError)
 	} else {
+		Logger().Error("cmtCtrl", "删除评论成功", Params{"id": id}.Err(err))
 		ctx.StatusCode(iris.StatusOK)
 	}
 }
