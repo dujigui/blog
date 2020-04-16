@@ -43,33 +43,37 @@ steps:
       - build
 
   - name: deploy
-    pull: if-not-exists
-    image: appleboy/drone-ssh
-    environment:
-      REGISTRY_USERNAME:
-        from_secret: registry_username
-      REGISTRY_PASSWORD:
-        from_secret: registry_password
-    settings:
-      script_stop: true
-      host:
-        from_secret: deploy_host
-      key:
-        from_secret: deploy_key
-      user: ubuntu
-      envs:
-        - registry_username
-        - registry_password
-      script:
-        - export REGISTRY_URL=registry.nullsfootprints.com
-        - export REGISTRY_REPO=$REGISTRY_URL/blog
-        - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD $REGISTRY_URL
-        - docker pull $REGISTRY_REPO:latest
-        - docker rm -f blog || true
-        - docker run --name blog --network blog -d $REGISTRY_REPO:latest
-        - docker rmi $(docker images --filter reference=$REGISTRY_REPO --filter before=$REGISTRY_REPO:latest -q)
-    depends_on:
-      - registry
+      pull: if-not-exists
+      image: appleboy/drone-ssh
+      environment:
+        REGISTRY_USERNAME:
+          from_secret: registry_username
+        REGISTRY_PASSWORD:
+          from_secret: registry_password
+        BLOG_DSN_DEV:
+          from_secret: blog_dsn
+      settings:
+        script_stop: true
+        host:
+          from_secret: deploy_host
+        key:
+          from_secret: deploy_key
+        user: ubuntu
+        envs:
+          - registry_username
+          - registry_password
+          - blog_dsn
+        script:
+          - export REGISTRY_URL=registry.nullsfootprints.com
+          - export REGISTRY_REPO=$REGISTRY_URL/blog
+          - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD $REGISTRY_URL
+          - docker pull $REGISTRY_REPO:latest
+          - docker rm -f blog || true
+          - docker run -v /home/ubuntu/blog/prod/:/app/data/ -e BLOG_DSN=$BLOG_DSN --network blog --name blog -d $REGISTRY_REPO:latest
+          - docker network connect nginx blog
+          - docker rmi $(docker images --filter reference=$REGISTRY_REPO --filter before=$REGISTRY_REPO:latest -q) || true
+      depends_on:
+        - registry
 
 trigger:
   branch:
