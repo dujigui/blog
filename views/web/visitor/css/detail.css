@@ -118,6 +118,12 @@
     word-break: break-word;
 }
 
+.markdown a {
+    color: #007bff;
+    text-decoration: none;
+    background-color: transparent;
+}
+
 .markdown table th{
     padding-top: 12px;
     padding-bottom: 12px;
