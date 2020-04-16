@@ -2,6 +2,7 @@ package posts
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	. "github.com/dujigui/blog/services/db"
 	. "github.com/dujigui/blog/services/tags"
@@ -128,6 +129,9 @@ func (m *mysql) Latest() (p Post, err error) {
 	err = Condition(tableName, "order by updated desc", func(rows *sql.Rows) error {
 		return scan(&p, rows)
 	})
+	if p.ID <= 0 {
+		return p, errors.New("数据库无 post")
+	}
 	return
 }
 

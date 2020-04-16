@@ -30,8 +30,10 @@ func (c *adminCtrl) Get() mvc.View {
 
 	var dp int
 	lp, err := PostTable().Latest()
-	if err == nil {
+	if err == nil && lp.ID > 0 {
 		dp = int(time.Now().Sub(lp.Updated).Hours() / 24)
+	} else {
+		dp = 0
 	}
 	do := int(time.Now().Sub(time.Unix(Pref().Init, 0)).Hours() / 24)
 
