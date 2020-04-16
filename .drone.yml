@@ -50,7 +50,7 @@ steps:
         from_secret: registry_username
       REGISTRY_PASSWORD:
         from_secret: registry_password
-      BLOG_DSN_DEV:
+      BLOG_DSN:
         from_secret: blog_dsn
     settings:
       script_stop: true
