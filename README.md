@@ -77,6 +77,12 @@ dujigui/blog:latest
 
 ## 直接编译启动
 
-首先准备好 mysql，按照[go-sql-driver 文档说明](https://github.com/go-sql-driver/mysql#dsn-data-source-name) 将 dsn 设置为环境变量，例如 `BLOG_DSN="root:Aa123456@/blog?charset=utf8mb4&parseTime=True&loc=Local"``。
+首先准备好 mysql，按照[go-sql-driver 文档说明](https://github.com/go-sql-driver/mysql#dsn-data-source-name) 将 dsn 设置为环境变量，例如 `BLOG_DSN="root:Aa123456@/blog?charset=utf8mb4&parseTime=True&loc=Local"。
 
 除此之外，开发或者测试时需要添加环境变量 `BLOG_DEBUG=true`。
+
+准备妥当之后，在根目录运行 `go run main.go` 即可。
+
+## 持续集成
+
+根目录下的 .drome.yml 用于持续集成，详情可以参考[博客文章](https://www.nullsfootprints.com/posts/41)
