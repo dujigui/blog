@@ -1,70 +1,70 @@
 一个简单的博客系统
 
-## 特色
-
-
-
-## 架构
+## 结构
 
 ```text
 browser -> gateway -> visitor -> services
                    -> admin   ->
 ```
 
-### gateway
+1. gateway 模块负责鉴权
+2. visitor 模块负责普通用户页面逻辑
+3. admin 模块负责管理后台页面逻辑
+4. services 负责向上述模块提供数据库、日志和配置项等服务
 
-鉴权，日志，访问控制（频率，黑名单）
+services 模块包括：
 
-### visitor
+1. users 用户账号体系
+2. logs 日志服务
+3. files 文件服务
+4. db 数据库服务
+5. posts/tags/comments 文章、标签和评论服务
 
-游客，普通用户
+## 使用 Docker 启动
 
-### admin
+### 启动 mysql
 
-管理员
+```shell
+mkdir -p blog/mysql/conf
 
-### services
+echo -e [client]\\n\
+default-character-set=utf8mb4\\n\
+[mysql]\\n\
+default-character-set=utf8mb4\\n\
+[mysqld]\\n\
+collation-server=utf8mb4_unicode_ci\\n\
+character-set-server=utf8mb4\\n\
+max_allowed_packet=256M\\n\
+default-time-zone=+08:00 > blog/mysql/conf/my.conf
 
-1. user
-2. file
-3. backup
-4. comment
-5. ip/location
-6. log
-7. post
-8. tag
-9. notice
-10. stats
-
-1. mysql
-2. redis
-
-## 安装
-
-### mysql
-
-```
-// install mysql
-docker pull mysql:5.7
-docker run --name blog -e MYSQL_ROOT_PASSWORD=Aa123456 -d mysql:5.7
-
-// create mysql user blog
-mysql -u root -p
-create user blog identified by 'Aa123456';
-grant all privileges on * . * to 'blog'@'%';
-flush privileges;
-exit;
-
-// create databases
-mysql -u blog -p
-create database blog character set utf8mb4 collate utf8mb4_unicode_ci;
-exit;
+docker run -d \
+-p 3306:3306 \
+-e MYSQL_ROOT_PASSWORD=Aa123456 \
+-e MYSQL_DATABASE=blog \
+-v $PWD/blog/mysql/conf:/etc/mysql/conf.d \
+--name mysql \
+mysql:5.7
 ```
 
-2. 启动
+### 启动博客
 
-首先准备好mysql，按照[go-sql-driver 文档说明](https://github.com/go-sql-driver/mysql#dsn-data-source-name) 将 dsn 设置为环境变量，例如 BLOG_DSN="blog:Aa123456@/blog?charset=utf8mb4&parseTime=True&loc=Local"
+```shell
+mkdir -p blog/data
 
-有两种运行方式，第一种使用打包好的 docker 镜像运行
+docker run -d \
+-v $PWD/data:/app/data/ \
+-e BLOG_DSN=root:Aa123456@/blog?charset=utf8mb4&parseTime=True&loc=Local \
+--name blog \
+dujigui/blog:latest
+```
+### 初始化
 
-第二种是直接编译运行，开发或者测试时需要添加环境变量 BLOG_DEBUG=true
+启动后访问 `http://localhost:8080`，第一次启动时，会自动重定向至 `http://localhost:8080/init`，完成初始化即可。
+
+网站首页为 `http://localhost:8080`，后台管理页面为 `http://localhost:8080/admin`
+
+## 直接编译启动
+
+首先准备好 mysql，按照[go-sql-driver 文档说明](https://github.com/go-sql-driver/mysql#dsn-data-source-name) 将 dsn 设置为环境变量，例如 `BLOG_DSN="root:Aa123456@/blog?charset=utf8mb4&parseTime=True&loc=Local"``。
+
+除此之外，开发或者测试时需要添加环境变量 `BLOG_DEBUG=true`。

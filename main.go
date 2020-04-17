@@ -12,7 +12,6 @@ import (
 	"time"
 )
 
-// todo 添加测试用例 添加log
 func main() {
 	if strings.EqualFold(os.Getenv("BLOG_DEBUG"), "true") {
 		Logger().Trace("main", "使用 BLOG_DEBUG 模式运行", nil)

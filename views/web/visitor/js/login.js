@@ -2,8 +2,7 @@ layui.use(['form'], function () {
     var $ = layui.jquery;
     var form = layui.form;
     $('#qq').click(function () {
-        var url = `https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=${qqAppId}&redirect_uri=${encodeURI(redirectUri)}&state=${qqState}`;
-        window.open(url);
+        window.location.href=`https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=${qqAppId}&redirect_uri=${encodeURI(redirectUri)}&state=${qqState}`;
     });
 
     form.on('submit(formDemo)', function (data) {
