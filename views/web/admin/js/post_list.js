@@ -35,7 +35,7 @@ layui.use(['table', 'layer'], function () {
 
         switch (layEvent) {
             case 'detail':
-                window.open('/posts/' + data.ID, '_blank');
+                window.open('/post/' + data.ID, '_blank');
                 break;
             case 'edit':
                 window.location.href = '/admin/posts/editor/' + data.ID;

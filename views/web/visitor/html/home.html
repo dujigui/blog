@@ -1,7 +1,7 @@
 <div class="posts-container layui-container">
     {{range .posts }}
         {{if eq .Type 1}}
-            <a href="/posts/{{.ID}}">
+            <a href="/post/{{.ID}}">
                 <div class="layui-row item">
                     <div class="layui-col-sm4">
                         <div class="image">
@@ -21,7 +21,7 @@
                 </div>
             </a>
         {{else if eq .Type 2}}
-            <a href="/posts/{{.ID}}">
+            <a href="/post/{{.ID}}">
                 <div class="layui-row item">
                     <div class="layui-col-sm4">
                         <div class="image">
@@ -40,7 +40,7 @@
                 </div>
             </a>
         {{else if eq .Type 3}}
-            <a href="/posts/{{.ID}}">
+            <a href="/post/{{.ID}}">
                 <div class="layui-row item moment">
                     <p class="moment-content">{{.Content}}</p>
                     <img class="moment-image" src="{{.Cover}}" alt="">

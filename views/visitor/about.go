@@ -13,9 +13,9 @@ type aboutCtrl struct {
 
 func (c *aboutCtrl) Get() interface{} {
 	apid := Pref().AboutPostID
-	if apid == 0 {
+	if apid <= 0 {
 		return mvc.Response{Path: "/"}
 	}
 
-	return mvc.Response{Path: fmt.Sprintf("/posts/%d", apid)}
+	return mvc.Response{Path: fmt.Sprintf("/post/%d", apid)}
 }

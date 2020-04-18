@@ -29,7 +29,7 @@ func Visitor(app *iris.Application) {
 	sp := hp.Party("/search")
 	mvc.New(sp).Handle(new(searchCtrl))
 
-	dp := hp.Party("/posts")
+	dp := hp.Party("/post")
 	mvc.New(dp).Handle(new(detailCtrl))
 
 	ap := hp.Party("/about")
